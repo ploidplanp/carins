@@ -2,5 +2,5 @@
 
 # how to run project
 - activate ตัว virtual environment
-- cd possite
+- cd mysite
 - python manage.py runserver
