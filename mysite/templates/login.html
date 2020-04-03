@@ -1,0 +1,67 @@
+<!DOCTYPE html> {% load static %}
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LOGIN</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+        
+        body {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-align: center;
+            align-items: center;
+            padding-top: 40px;
+            padding-bottom: 40px;
+            /* background-color: #84a9ac; */
+        }
+        
+        .form-signin {
+            width: 100%;
+            max-width: 330px;
+            padding: 15px;
+            margin: auto;
+        }
+        
+        .form-signin .form-control {
+            position: relative;
+            box-sizing: border-box;
+            height: auto;
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+
+</head>
+
+<body class="text-center">
+    <form class="form-signin" method="POST" action="{% url 'mylogin' %}">
+        {% csrf_token %}
+        <h1 class="h3 mb-3 font-weight-normal">Please Login</h1>
+
+        <input type="text" id="username" class="form-control mt-3" placeholder="Username" required autofocus name="username">
+
+        <input type="password" id="password" class="form-control mt-3" placeholder="Password" required name="password"> {% if error %}
+        <p class="text-danger text-left">{{error}}</p>
+        {% endif %}
+
+        <button class="btn btn-lg btn-primary btn-block mt-3" type="submit">Login</button>
+    </form>
+    {% block content %} {% endblock %}
+
+
+    <footer class="myfooter page-footer font-small fixed-bottom mt-5">
+        <div class="footer-copyright text-center py-3">© Car Ins.</div>
+    </footer>
+</body>
+
+</html>
