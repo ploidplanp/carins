@@ -50,8 +50,9 @@
 
         <input type="text" id="username" class="form-control mt-3" placeholder="Username" required autofocus name="username">
 
-        <input type="password" id="password" class="form-control mt-3" placeholder="Password" required name="password"> {% if error %}
-        <p class="text-danger text-left">{{error}}</p>
+        <input type="password" id="password" class="form-control mt-3" placeholder="Password" required name="password">
+        {% if error %}
+            <p class="text-danger text-left">{{error}}</p>
         {% endif %}
 
         <button class="btn btn-lg btn-primary btn-block mt-3" type="submit">Login</button>

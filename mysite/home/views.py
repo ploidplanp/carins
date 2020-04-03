@@ -1,11 +1,33 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.template.context_processors import request
+from django.contrib.auth import authenticate, login, logout
 
 # Create your views here.
 
 def mylogin(request):
     context = {}
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=password)
+
+        if user:
+            login(request, user)
+            return redirect('profile')
+            # return render(request, template_name='home.html')
+        else:
+            context['username'] = username
+            context['password'] = password
+            context['error'] = 'something wrong, please try again :\')'
+
     return render(request, template_name='login.html')
+
+def mylogout(request):
+    logout(request)
+    print('logout')
+    return redirect('mylogin')
 
 # กดที่ home
 def profile(request):
