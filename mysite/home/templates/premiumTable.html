@@ -1,5 +1,57 @@
 {% extends "base.html" %} {% block content %}
+<style>
+    .bdl {
+        border-left: 10px solid #84a9ac;
+        padding-left: 3%;
+    }
+</style>
 <div class="container">
-    <h1>premium table page</h1>
+    <h1 class="bdl">อัตรเบี้ยพ.ร.บ.</h1>
+    <table class="table table-hover mt-5">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">รหัส</th>
+                <th scope="col">แบบรถ</th>
+                <th scope="col">รายละเอียด</th>
+                <th scope="col">เบี้ยประกัน</th>
+                <th scope="col">อากรแสตมป์</th>
+                <th scope="col">VAT</th>
+                <th scope="col">รวม</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td>1.10</td>
+                <td>รถนั่งไม่เกิน 7 คน</td>
+                <td>ใช้เป็นรถส่วนบุคคล ไม่ใช่รับจ้างหรือให้เช่า</td>
+                <td>600.00</td>
+                <td>3.00</td>
+                <td>42.21</td>
+                <td>645.21</td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>1.10</td>
+                <td>รถนั่งไม่เกิน 7 คน</td>
+                <td>ใช้เป็นรถส่วนบุคคล ไม่ใช่รับจ้างหรือให้เช่า</td>
+                <td>600.00</td>
+                <td>3.00</td>
+                <td>42.21</td>
+                <td>645.21</td>
+            </tr>
+            <tr>
+                <th scope="row">3</th>
+                <td>1.10</td>
+                <td>รถนั่งไม่เกิน 7 คน</td>
+                <td>ใช้เป็นรถส่วนบุคคล ไม่ใช่รับจ้างหรือให้เช่า</td>
+                <td>600.00</td>
+                <td>3.00</td>
+                <td>42.21</td>
+                <td>645.21</td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 {% endblock %}

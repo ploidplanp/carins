@@ -1,5 +1,32 @@
 {% extends "base.html" %} {% block content %}
+<style>
+    .bdl {
+        border-left: 10px solid #84a9ac;
+        padding-left: 3%;
+    }
+</style>
 <div class="container">
-    <h1>ตารางรหัสการใช้รถ page</h1>
+    <h1 class="bdl">รหัสการใช้รถ</h1>
+    <table class="table table-hover mt-5">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">รหัส</th>
+                <th scope="col">รายละเอียด</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td>110</td>
+                <td>เก๋ง กระบะ 4 ประตู ส่วนบุคคล</td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>120</td>
+                <td>เก๋ง กระบะ 4 ประตู เพื่อการพาณิชย์</td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 {% endblock %}
