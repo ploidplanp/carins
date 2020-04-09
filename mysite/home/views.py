@@ -3,6 +3,9 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.template.context_processors import request
 
+from django.contrib.auth.models import User
+from home.models import Person, Car_Use_Type_Table
+
 # Create your views here.
 
 def mylogin(request):
@@ -48,4 +51,9 @@ def premium_detail(request):
 # กดที่ ดูข้อมูล เลือก ตารางรหัสการใช้รถ
 @login_required
 def cartype_detail(request):
-    return render(request, 'carUseType.html')
+    table = Car_Use_Type_Table.objects.all().order_by('code')
+
+    context = {
+        'table': table
+    }
+    return render(request, 'carUseType.html', context=context)

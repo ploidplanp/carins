@@ -16,16 +16,13 @@
             </tr>
         </thead>
         <tbody>
+            {% for car in table %}
             <tr>
-                <th scope="row">1</th>
-                <td>110</td>
-                <td>เก๋ง กระบะ 4 ประตู ส่วนบุคคล</td>
+                <th scope="row">{{forloop.counter}}</th>
+                <td>{{car.code}}</td>
+                <td>{{car.info}}</td>
             </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>120</td>
-                <td>เก๋ง กระบะ 4 ประตู เพื่อการพาณิชย์</td>
-            </tr>
+            {% endfor %}
         </tbody>
     </table>
 </div>
