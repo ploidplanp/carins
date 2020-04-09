@@ -13,40 +13,20 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">ชื่อบริษัท</th>
-                <th scope="col">เลขประจำตัวผู้เสียภาษี</th>
+                {% comment %} <th scope="col">เลขประจำตัวผู้เสียภาษี</th> {% endcomment %}
                 <th scope="col">ที่อยู่</th>
                 <th scope="col">เบอร์โทรศัพท์</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>x</td>
-                <td>123456789</td>
-                <td>ใต้ฟ้า บนดิน</td>
-                <td>0888888888</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>x</td>
-                <td>123456789</td>
-                <td>ใต้ฟ้า บนดิน</td>
-                <td>0888888888</td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td>x</td>
-                <td>123456789</td>
-                <td>ใต้ฟ้า บนดิน</td>
-                <td>0888888888</td>
-            </tr>
-            <tr>
-                <th scope="row">4</th>
-                <td>x</td>
-                <td>123456789</td>
-                <td>ใต้ฟ้า บนดิน</td>
-                <td>0888888888</td>
-            </tr>
+            {% for company in table %}
+                <tr>
+                    <th scope="row">{{forloop.counter}}</th>
+                    <td>{{company.name}} <br>{{company.tax_no}}</td>
+                    <td>{{company.address}}</td>
+                    <td>{{company.phone}}</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
 

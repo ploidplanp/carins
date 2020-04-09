@@ -23,3 +23,15 @@ class Premium_Table(models.Model):
 
     def __str__(self):
         return '%s : %s' %(self.code, self.make_model)
+
+class Company(models.Model):
+    name = models.CharField(max_length=255)
+    tax_no = models.CharField(max_length=13)
+    address = models.TextField(null=True, blank=True)
+    phone = models.CharField(max_length=10)
+
+class Province(models.Model):
+    name = models.CharField(max_length=255)
+
+class Brand(models.Model):
+    name = models.CharField(max_length=255)

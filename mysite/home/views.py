@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render
 from django.template.context_processors import request
 
 from django.contrib.auth.models import User
-from home.models import Person, Car_Use_Type_Table
+from home.models import Person, Car_Use_Type_Table, Company
 
 # Create your views here.
 
@@ -41,7 +41,12 @@ def profile(request):
 # กดที่ ดูข้อมูล เลือก บริษัท จะแสดงรายชื่อบริษัททั้งหมด
 @login_required
 def company_detail(request):
-    return render(request, 'company.html')
+    table = Company.objects.all().order_by('id')
+
+    context = {
+        'table': table
+    }
+    return render(request, 'company.html', context=context)
 
 # กดที่ ดูข้อมูล เลือก ตารางอัตราเบี้ยพ.ร.บ.
 @login_required
