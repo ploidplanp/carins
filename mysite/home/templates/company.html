@@ -4,31 +4,35 @@
         border-left: 10px solid #84a9ac;
         padding-left: 3%;
     }
+    
+    .mycompany ul li {
+        margin: 2%;
+    }
+    
+    .mycompany {
+        background-color: #eae7d9;
+    }
+    
+    .mycompany:hover {
+        background-color: #d2c6b2;
+    }
 </style>
 
 <div class="container">
     <h1 class="bdl">รายชื่อบริษัท</h1>
-    <table class="table table-hover mt-5">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">ชื่อบริษัท</th>
-                {% comment %} <th scope="col">เลขประจำตัวผู้เสียภาษี</th> {% endcomment %}
-                <th scope="col">ที่อยู่</th>
-                <th scope="col">เบอร์โทรศัพท์</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for company in table %}
-                <tr>
-                    <th scope="row">{{forloop.counter}}</th>
-                    <td>{{company.name}} <br>{{company.tax_no}}</td>
-                    <td>{{company.address}}</td>
-                    <td>{{company.phone}}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
+    <div class="row">
+        {% for company in table %}
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="jumbotron mt-5 mycompany">
+                <h1 class="display-4">{{company.name}}</h1>
+                <ul>
+                    <li>เลขที่ผู้เสียภาษี:<br>&emsp;{{company.tax_no}}</li>
+                    <li>ที่อยู่:<br>&emsp;{{company.address}}</li>
+                    <li>เบอร์โทรศัพท์:<br>&emsp;{{company.phone}}</li>
+                </ul>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}
