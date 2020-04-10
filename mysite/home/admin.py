@@ -14,7 +14,7 @@ class Car_Use_Type_TableAdmin(admin.ModelAdmin):
     search_fields = ['code', 'info']
 
 class Premium_TableAdmin(admin.ModelAdmin):
-    list_display = ['code', 'make_model', 'info']
+    list_display = ['code', 'make_model', 'info', 'premium', 'revenue_stamp', 'vat', 'total']
 
 class CompanyAdmin(admin.ModelAdmin):
     list_display = ['name', 'tax_no', 'address', 'phone']

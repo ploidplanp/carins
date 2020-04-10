@@ -1,10 +1,12 @@
+from builtins import object
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
 from django.template.context_processors import request
 
-from django.contrib.auth.models import User
-from home.models import Person, Car_Use_Type_Table, Company
+from home.models import Car_Use_Type_Table, Company, Person, Premium_Table
 
 # Create your views here.
 
@@ -57,7 +59,12 @@ def company_detail(request):
 # กดที่ ดูข้อมูล เลือก ตารางอัตราเบี้ยพ.ร.บ.
 @login_required
 def premium_detail(request):
-    return render(request, 'premiumTable.html')
+    table = Premium_Table.objects.all().order_by('code')
+
+    context = {
+        'table': table
+    }
+    return render(request, 'premiumTable.html', context=context)
 
 # กดที่ ดูข้อมูล เลือก ตารางรหัสการใช้รถ
 @login_required

@@ -21,36 +21,18 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>1.10</td>
-                <td>รถนั่งไม่เกิน 7 คน</td>
-                <td>ใช้เป็นรถส่วนบุคคล ไม่ใช่รับจ้างหรือให้เช่า</td>
-                <td>600.00</td>
-                <td>3.00</td>
-                <td>42.21</td>
-                <td>645.21</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>1.10</td>
-                <td>รถนั่งไม่เกิน 7 คน</td>
-                <td>ใช้เป็นรถส่วนบุคคล ไม่ใช่รับจ้างหรือให้เช่า</td>
-                <td>600.00</td>
-                <td>3.00</td>
-                <td>42.21</td>
-                <td>645.21</td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td>1.10</td>
-                <td>รถนั่งไม่เกิน 7 คน</td>
-                <td>ใช้เป็นรถส่วนบุคคล ไม่ใช่รับจ้างหรือให้เช่า</td>
-                <td>600.00</td>
-                <td>3.00</td>
-                <td>42.21</td>
-                <td>645.21</td>
-            </tr>
+            {% for premium in table %}
+                <tr>
+                    <th scope="row">{{forloop.counter}}</th>
+                    <th>{{premium.code}}</th>
+                    <td>{{premium.make_model}}</td>
+                    <td>{{premium.info}}</td>
+                    <td>{{premium.premium}}</td>
+                    <td>{{premium.revenue_stamp}}</td>
+                    <td>{{premium.vat}}</td>
+                    <td>{{premium.total}}</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
 </div>
