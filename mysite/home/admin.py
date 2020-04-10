@@ -7,7 +7,7 @@ from home.models import Car_Use_Type_Table, Person, Premium_Table, Company, Prov
 # Register your models here.
 
 class PersonAdmin(admin.ModelAdmin):
-    list_display = ['fname', 'lname', 'phone', 'username']
+    list_display = ['user', 'card_id', 'phone']
 
 class Car_Use_Type_TableAdmin(admin.ModelAdmin):
     list_display = ['code', 'info']

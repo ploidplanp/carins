@@ -36,7 +36,13 @@ def mylogout(request):
 # กดที่ home
 @login_required
 def profile(request):
-    return render(request, 'profile.html')
+    print(request.user)
+    profile = Person.objects.filter(user=request.user)
+    
+    context = {
+        'profile': profile
+    }
+    return render(request, 'profile.html', context=context)
 
 # กดที่ ดูข้อมูล เลือก บริษัท จะแสดงรายชื่อบริษัททั้งหมด
 @login_required

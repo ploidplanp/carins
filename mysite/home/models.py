@@ -1,13 +1,13 @@
+from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.deletion import PROTECT
+
 
 # Create your models here.
 class Person(models.Model):
+    user = models.OneToOneField(User, on_delete=PROTECT, null=True)
     card_id = models.CharField(max_length=13)
-    fname = models.CharField(max_length=255)
-    lname = models.CharField(max_length=255)
     phone = models.CharField(max_length=10)
-    username = models.CharField(max_length=20)
-    password = models.CharField(max_length=20)
 
 class Car_Use_Type_Table(models.Model):
     code = models.CharField(max_length=3)
@@ -20,6 +20,10 @@ class Premium_Table(models.Model):
     code = models.CharField(max_length=5)
     make_model = models.CharField(max_length=25)
     info = models.TextField(null=True, blank=True)
+    premium = models.FloatField(default=0.00)
+    revenue_stamp = models.FloatField(default=0.00)
+    vat = models.FloatField(default=0.00)
+    total = models.FloatField(default=0.00)
 
     def __str__(self):
         return '%s : %s' %(self.code, self.make_model)

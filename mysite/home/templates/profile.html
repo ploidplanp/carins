@@ -43,8 +43,10 @@
         </div>
         <div class="card-body text-left">
             <div class="profileinfo">
-                <p class="card-text">ชื่อ: nitchapx</p>
-                <p class="card-text">นามสกุล: kan</p>
+                {% for info in profile %}
+                <p class="card-text">ชื่อ: {{info.user.first_name}}</p>
+                <p class="card-text">นามสกุล: {{info.user.last_name}}</p>
+                {% endfor %}
             </div>
         </div>
         <div class="card-body">
