@@ -8,5 +8,63 @@
 
 <div class="container">
     <h1 class="bdl">รายงานกรมธรรม์หมดอายุ</h1>
+
+    <div class="row mt-5">
+
+        <div class="col-lg-8">
+            <div class="jumbotron">
+                <h5>เลขที่กรมธรรม์ xxxxxxxxxxxx</h5>
+                <hr class="my-4">
+                <p>เลขทะเบียน: อท1616</p>
+                <p>ติดต่อ: xxxxxxxxx</p>
+                <ul>
+                    <li>บริษัท: xxxx</li>
+                    <li>สถานะ: availiable</li>
+                    <li>วันเริ่มคุ้มครอง: <i>12/04/2564</i></li>
+                    <li>วันสิ้นสุดคุ้มครอง: <i>12/04/2564</i></li>
+                </ul>
+                <!-- <p class="lead">
+                    <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+                </p> -->
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <input type="date" class="form-control" id="search_day" name="search_day" required>
+                        </div>
+                        <div class="col-lg-6">
+                            <button type="submit" class="mybtn btn btn-outline-primary" style="width: 50%;">Day</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 mt-4">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <input type="week" class="form-control" id="search_week" name="search_week" required>
+                        </div>
+                        <div class="col-lg-6">
+                            <button type="submit" class="mybtn btn btn-outline-primary" style="width: 50%;">Week</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 mt-4">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <input type="week" class="form-control" id="search_week" name="search_week" required>
+                        </div>
+                        <div class="col-lg-6">
+                            <button type="submit" class="mybtn btn btn-outline-primary" style="width: 50%;">Month</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>
+
 {% endblock %}

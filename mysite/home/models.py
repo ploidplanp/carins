@@ -8,6 +8,9 @@ class Person(models.Model):
     user = models.OneToOneField(User, on_delete=PROTECT, null=True)
     card_id = models.CharField(max_length=13)
     phone = models.CharField(max_length=10)
+    
+    def __str__(self):
+        return '%s %s (%s)' %(self.user.first_name, self.user.last_name, self.phone)
 
 class Car_Use_Type_Table(models.Model):
     code = models.CharField(max_length=3)
@@ -34,8 +37,17 @@ class Company(models.Model):
     address = models.TextField(null=True, blank=True)
     phone = models.CharField(max_length=10)
 
+    def __str__(self):
+        return '%s' %self.name
+
 class Province(models.Model):
     name = models.CharField(max_length=255)
 
+    def __str__(self):
+        return '%s' %self.name
+
 class Brand(models.Model):
     name = models.CharField(max_length=255)
+    
+    def __str__(self):
+        return '%s' %self.name
