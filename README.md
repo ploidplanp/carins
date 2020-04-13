@@ -3,4 +3,4 @@
 # how to run project
 - activate ตัว virtual environment
 - cd mysite
-- python manage.py runserver ...dsd
+- python manage.py runserver
