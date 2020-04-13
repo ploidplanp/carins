@@ -6,14 +6,14 @@ from home.models import (Brand, Car_Use_Type_Table, Company, Person,
                          Premium_Table, Province)
 
 inscode_choice = (
-    ('a', '1'), ('b', '2'), ('c', '3'), ('d', '3+')
+    ('1', '1'), ('2', '2'), ('3', '3'), ('3+', '3+')
 )
 
 status_choice = (
-    ('av', 'available'), ('uv', 'unavailable')
+    ('Available', 'Available'), ('Unavailable', 'Unavailable')
 )
 type_choice = (
-    ('a', 'รถยนต์'), ('b', 'จักรยานยนต์')
+    ('รถยนต์', 'รถยนต์'), ('รถจักรยานยนต์', 'จักรยานยนต์')
 )
 
 # Create your models here.
@@ -48,7 +48,7 @@ class Car(models.Model):
     displacement = models.IntegerField()
     gvw = models.IntegerField()
     seat = models.IntegerField()
-    type = models.CharField(max_length=12, choices=type_choice)
+    type = models.CharField(max_length=13, choices=type_choice)
     owner = models.ForeignKey(Owner, on_delete=models.PROTECT)
 
     def __str__(self):
@@ -70,7 +70,7 @@ class Contract(models.Model):
 class Insurance_Policy(models.Model):
     insurance_id = models.CharField(max_length=50)
     insurance_car_use_type = models.ForeignKey(Car_Use_Type_Table, on_delete=models.PROTECT)
-    insurance_code = models.CharField(max_length=2, choices=inscode_choice)
+    insurance_code = models.CharField(max_length=5, choices=inscode_choice)
     #
     contract = models.ForeignKey(Contract, on_delete=models.PROTECT)
 
