@@ -1,6 +1,9 @@
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.template.context_processors import request
+
+from .forms import TryForm
 
 # Create your views here.
 
@@ -12,7 +15,14 @@ def report_expire(request):
 @login_required
 # หน้าเพิ่มกรมธรรม์ ประกัน
 def new_policy(request):
-    return render(request, template_name='insurance_policy/new_policy.html')
+    if request.method == 'POST':
+        form = TryForm(request.POST)
+        if form.is_valid():
+            print(form.cleaned_data['name'])
+            return HttpResponse('thank you')
+    else:
+        form = TryForm()
+    return render(request, 'insurance_policy/new_policy.html', {'form': form})
 
 @login_required
 # หน้าเพิ่มกรมธรรม์ พ.ร.บ.

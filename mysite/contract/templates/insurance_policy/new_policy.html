@@ -8,5 +8,10 @@
 
 <div class="container">
     <h1 class="bdl">เพิ่มกรมธรรม์ประกันภัย</h1>
+    <form action="{% url 'new_policy' %}" method='POST'>
+        {% csrf_token %}
+        {{ form.as_ul }}
+        <input type="submit" value="submit">
+    </form>
 </div>
 {% endblock %}

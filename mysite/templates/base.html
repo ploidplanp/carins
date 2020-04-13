@@ -33,16 +33,29 @@
                         ดูข้อมูล
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        {% if user.is_superuser %}
+                        <a class="dropdown-item" href="#">ผู้ใช้งาน</a>
+                        {% endif %}
                         <a class="dropdown-item" href="{% url 'company_detail' %}">บริษัท</a>
                         <a class="dropdown-item" href="{% url 'premium_detail' %}">ตารางอัตราเบี้ยพ.ร.บ.</a>
                         <a class="dropdown-item" href="{% url 'cartype_detail' %}">ตารางรหัสการใช้รถ</a>
+                        {% if user.is_superuser == 0 %}
+                        {% comment %} เมนูสำหรับคนที่เป็น user ธรรมดา {% endcomment %}
+                            <a class="dropdown-item" href="#">ลูกค้า</a>
+                        {% endif %}
                     </div>
                 </li>
                 {% if user.is_superuser %}
                     {% comment %} เมนูสำหรับคนที่เป็น admin {% endcomment %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">จัดการ user</a>
-                    </li>
+                    <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        จัดการข้อมูล
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">ผู้ใช้งาน</a>
+                        <a class="dropdown-item" href="#">บริษัท</a>
+                    </div>
+                </li>
                 {% else %}
                     {% comment %} เมนูสำหรับคนที่เป็น user ธรรมดา {% endcomment %}
                     <li class="nav-item dropdown">
@@ -55,12 +68,15 @@
                         </div>
                     </li>
                 {% endif %}
-                <li class="nav-item">
-                    <a class="nav-link" href="#">รายการกรมธรรม์</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'report_expire' %}">รายงานกรมธรรม์หมดอายุ</a>
-                </li>
+                {% if user.is_superuser == 0 %}
+                {% comment %} เมนูสำหรับคนที่เป็น user ธรรมดา {% endcomment %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">รายการกรมธรรม์</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'report_expire' %}">รายงานกรมธรรม์หมดอายุ</a>
+                    </li>
+                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'mylogout' %}">logout</a>
                 </li>
