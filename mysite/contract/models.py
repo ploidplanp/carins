@@ -72,10 +72,10 @@ class Insurance_Policy(models.Model):
     insurance_car_use_type = models.ForeignKey(Car_Use_Type_Table, on_delete=models.PROTECT)
     insurance_code = models.CharField(max_length=5, choices=inscode_choice)
     #
-    contract = models.ForeignKey(Contract, on_delete=models.PROTECT)
+    contract = models.OneToOneField(Contract, on_delete=models.PROTECT)
 
 class Compulsory_Insurance(models.Model):
     compulsory_id = models.CharField(max_length=50)
     compulsory_car_use_type = models.ForeignKey(Premium_Table, on_delete=models.PROTECT)
     #
-    contract = models.ForeignKey(Contract, on_delete=models.PROTECT)
+    contract = models.OneToOneField(Contract, on_delete=models.PROTECT)

@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.template.context_processors import request
 
-from .forms import TryForm
+from .forms import TryForm, ContractForm
 
 # Create your views here.
 
@@ -16,12 +16,12 @@ def report_expire(request):
 # หน้าเพิ่มกรมธรรม์ ประกัน
 def new_policy(request):
     if request.method == 'POST':
-        form = TryForm(request.POST)
+        form = ContractForm(request.POST)
         if form.is_valid():
             print(form.cleaned_data['name'])
             return HttpResponse('thank you')
     else:
-        form = TryForm()
+        form = ContractForm()
     return render(request, 'insurance_policy/new_policy.html', {'form': form})
 
 @login_required
