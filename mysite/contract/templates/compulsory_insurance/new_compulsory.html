@@ -4,9 +4,70 @@
         border-left: 10px solid #84a9ac;
         padding-left: 3%;
     }
+    
+    .mycontract {
+        width: 90%;
+    }
 </style>
 
 <div class="container">
     <h1 class="bdl">เพิ่มกรมธรรม์พ.ร.บ.</h1>
-</div>
-{% endblock %}
+    <div class="container mycontract">
+        <form action="{% url 'new_compulsory' %}" method='POST' class="mt-5">
+            {% csrf_token %}
+            <h4>ข้อมูลพื้นฐาน</h4><br>
+            <div class="form-group">
+                <label for="">เลขทะเบียนรถ</label>
+                <select class="form-control" id="id_province">
+                    <option value='Choose..'>Choose...</option>
+                    {% for c in carlist %}
+                        <option value='{{c.id}}'>{{c}}</option>
+                    {% endfor %}
+                </select>
+                <small class="form-text text-muted"><a href="">ต้องการเพิ่มทะเบียนรถ</a></small>
+            </div>
+            <div class="form-group">
+                <label for="">ชื่อผู้ติดต่อ/ลูกค้า</label>
+                <select class="form-control" id="id_province">
+                    <option value='Choose..'>Choose...</option>
+                    {% for cus in customerlist %}
+                        <option value='{{cus.id}}'>{{cus}}</option>
+                    {% endfor %}
+                </select>
+                <small class="form-text text-muted"><a href="">ต้องการเพิ่มผู้ติดต่อ</a></small>
+            </div>
+
+            <hr class="mt-5 mb-5">
+
+            <h4>ข้อมูลพ.ร.บ.</h4><br>
+            <div class="form-group">
+                <label for="">เลขที่กรมธรรม์</label>
+                <input type="text" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="">วันเริ่มคุ้มครอง</label>
+                <input type="date" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="">บริษัท</label>
+                <select class="form-control" id="id_province">
+                    <option value='Choose..'>Choose...</option>
+                    {% for company in companylist %}
+                        <option value='{{company.id}}'>{{company.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="">รหัสการใช้รถพ.ร.บ.</label>
+                <select class="form-control" id="id_province">
+                    <option value='Choose..'>Choose...</option>
+                    {% for premium in premiumlist %}
+                        <option value='{{premium.id}}'>{{premium}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-outline-success mb-5">ยืนยัน</button>
+        </form>
+    </div>
+    {% endblock %}

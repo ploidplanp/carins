@@ -1,11 +1,20 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models.expressions import OrderBy
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.template.context_processors import request
 
-from .forms import TryForm, ContractForm
+from contract.models import Car, Customer
+from home.models import Brand, Company, Province, Premium_Table
+
+from .forms import ContractForm, Insurance_PolicyFrom
 
 # Create your views here.
+carlist = Car.objects.all().order_by('license_on')
+customerlist = Customer.objects.all().order_by('fname', 'lname')
+companylist = Company.objects.all().order_by('name')
+premiumlist = Premium_Table.objects.all().order_by('code')
+
 
 @login_required
 # หน้ารายงานกรมธรรม์หมดอายุ
@@ -16,15 +25,29 @@ def report_expire(request):
 # หน้าเพิ่มกรมธรรม์ ประกัน
 def new_policy(request):
     if request.method == 'POST':
-        form = ContractForm(request.POST)
+        form = Insurance_PolicyFrom(request.POST)
         if form.is_valid():
-            print(form.cleaned_data['name'])
+            print(form.cleaned_data)
             return HttpResponse('thank you')
     else:
-        form = ContractForm()
-    return render(request, 'insurance_policy/new_policy.html', {'form': form})
+        form = Insurance_PolicyFrom()
+
+    brandlist = Brand.objects.all()
+    provincelist = Province.objects.all()
+    context = {
+        'form': form,
+        'brandlist': brandlist,
+        'provincelist': provincelist
+    }
+    return render(request, 'insurance_policy/new_policy.html', context=context)
 
 @login_required
 # หน้าเพิ่มกรมธรรม์ พ.ร.บ.
 def new_compulsory(request):
-    return render(request, template_name='compulsory_insurance/new_compulsory.html')
+    context = {
+        'carlist': carlist,
+        'customerlist': customerlist,
+        'companylist': companylist,
+        'premiumlist': premiumlist
+    }
+    return render(request, 'compulsory_insurance/new_compulsory.html', context=context)

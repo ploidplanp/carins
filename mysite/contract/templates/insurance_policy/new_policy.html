@@ -4,14 +4,139 @@
         border-left: 10px solid #84a9ac;
         padding-left: 3%;
     }
+    
+    .mycar {
+        border-right: 1px solid #d2c6b2;
+    }
+    
+    .col {
+        padding: 3%;
+    }
 </style>
 
 <div class="container">
     <h1 class="bdl">เพิ่มกรมธรรม์ประกันภัย</h1>
-    <form action="{% url 'new_policy' %}" method='POST'>
-        {% csrf_token %}
-        {{ form.as_ul }}
-        <input type="submit" value="submit">
-    </form>
+    <div class="container" style="width: 75%;">
+
+        <form action="{% url 'new_policy' %}" method='POST' class="mt-5">
+            {% csrf_token %} {% comment %} {{ form.as_ul }} {% endcomment %} {{ form.errors }}
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label for="">ชื่อเจ้าของรถ</label> {{ form.owner_fname }} {{ form.owner_fname.errors }}
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label for="">นามสกุล</label> {{ form.owner_lname }} {{ form.owner_lname.errors }}
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label for="">ทะเบียนรถ</label> {{ form.license }} {{ form.license.errors }}
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label for="">จังหวัด</label>
+                        <select class="form-control" id="id_province">
+                            {% for p in provincelist %}
+                                <option value='{{p.id}}'>{{p.name}}</option>
+                            {% endfor %}
+                            
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-outline-warning">ตรวจสอบ</button>
+
+            <!--  -->
+
+            <hr class="mt-5 mb-5">
+
+            <div class="row">
+                <div class="col col-lg-6 col-lg-6 col-sm-12 mycar">
+                    <h4>ข้อมูลรถ:</h4><br>
+                    <div class="form-group">
+                        <label for="">{{ form.car_register.label }}</label> {{ form.car_register }} {{ form.car_register.errors }}
+                    </div>
+                    <div class="form-group">
+                        <label for="">ยี่ห้อรถ</label>
+                        <select class="form-control" id="id_province">
+                            {% for b in brandlist %}
+                                <option value='{{b.id}}'>{{b.name}}</option>
+                            {% endfor %}
+                            
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="">รุ่นของรถ</label> {{ form.model }} {{ form.model.errors }}
+                    </div>
+                    <div class="form-group">
+                        <label for="">ประเภทของรถ</label> {{ form.cartype }} {{ form.cartype.errors }}
+                    </div>
+                    <div class="form-group">
+                        <label for="">ขนาดเครื่องยนต์</label> {{ form.displacement }} {{ form.displacement.errors }}
+                    </div>
+                    <div class="form-group">
+                        <label for="">น้ำหนักรวม</label> {{ form.gvw }} {{ form.gvw.errors }}
+                    </div>
+                    <div class="form-group">
+                        <label for="">จำนวนที่นั่ง</label> {{ form.seat }} {{ form.seat.errors }}
+                    </div>
+                </div>
+
+                <div class="col col-lg-6 col-lg-6 col-sm-12">
+                    <h4>ข้อมูลเจ้าของรถ:</h4><br>
+                    <div class="form-group">
+                        <label for="">เลขบัตรประชาชนเจ้าของรถ</label> {{ form.owner_card_id }} {{ form.owner_card_id.errors }}
+                    </div>
+                    <div class="form-group">
+                        <label for="">เบอร์โทรศัพท์เจ้าของรถ</label> {{ form.owner_phone }} {{ form.owner_phone.errors }}
+                    </div>
+                    <div class="form-group">
+                        <label for="">ที่อยู่เจ้าของรถ</label> {{ form.owner_address }} {{ form.owner_address.errors }}
+                    </div>
+
+                </div>
+            </div>
+
+            <hr class="mt-5 mb-5">
+
+
+            <h4>ข้อมูลผู้ติดต่อ (ลูกค้า):</h4><br>
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="">ชื่อผู้ติดต่อ</label> {{ form.cus_fname }} {{ form.cus_fname.errors }}
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="">นามสกุลผู้ติดต่อ</label> {{ form.cus_lname }} {{ form.cus_lname.errors }}
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="">เลขบัตรประชาชนผู้ติดต่อ</label> {{ form.cus_card_id }} {{ form.cus_card_id.errors }}
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="">เบอร์โทรศัพท์ผู้ติดต่อ</label> {{ form.cus_phone }} {{ form.cus_phone.errors }}
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="">ที่อยู่ผู้ติดต่อ</label> {{ form.cus_address }} {{ form.cus_address.errors }}
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-outline-success mb-5">หน้าต่อไป</button>
+        </form>
+
+    </div>
 </div>
 {% endblock %}
