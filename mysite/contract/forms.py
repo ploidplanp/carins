@@ -4,7 +4,7 @@ from psycopg2.sql import Placeholder
 
 # from .models import Contract, Insurance_Policy
 from .models import Province
-from contract.models import Compulsory_Insurance, Contract
+from contract.models import Compulsory_Insurance, Customer
 
 type_choice = (
     ('รถยนต์', 'รถยนต์'), ('รถจักรยานยนต์', 'จักรยานยนต์')
@@ -41,7 +41,11 @@ class Insurance_PolicyFrom(forms.Form):
 
     license.widget.attrs.update({'class':'form-control', 'Placeholder':'อท1616'})
 
-class ContractForm(ModelForm):
-    class Meta:
-        model = Contract
-        fields = '__all__'
+class CustomerForm(forms.Form):
+    fname = forms.CharField(label='ชื่อ', max_length=255, widget=forms.TextInput(attrs={'class':'form-control'}))
+    lname = forms.CharField(label='นามสกุล', max_length=255, widget=forms.TextInput(attrs={'class':'form-control'}))
+    card_id = forms.CharField(label='เลขบัตรประชาชน', max_length=13, widget=forms.TextInput(attrs={'class':'form-control'}))
+    address = forms.CharField(label='ที่อยู่', widget=forms.Textarea(attrs={'class':'form-control'}))
+    phone = forms.CharField(label='เบอร์โทรศัพท์', max_length=10, widget=forms.TextInput(attrs={'class':'form-control'}), )
+
+    phone.widget.attrs.update({'class':'form-control', 'Placeholder':'เบอร์โทรศัพท์ 10 หลัก'})

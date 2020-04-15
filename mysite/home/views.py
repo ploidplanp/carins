@@ -39,6 +39,7 @@ def mylogout(request):
 @login_required
 def profile(request):
     print(request.user)
+    print(request.user.id)
     profile = Person.objects.filter(user=request.user)
     
     context = {
