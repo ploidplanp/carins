@@ -49,3 +49,20 @@ class CustomerForm(forms.Form):
     phone = forms.CharField(label='เบอร์โทรศัพท์', max_length=10, widget=forms.TextInput(attrs={'class':'form-control'}), )
 
     phone.widget.attrs.update({'class':'form-control', 'Placeholder':'เบอร์โทรศัพท์ 10 หลัก'})
+
+class ContractFrom(forms.Form):
+    contractno = forms.CharField(label='เลขที่กรมธรรม์', max_length=50, widget=forms.TextInput(attrs={'class':'form-control'}))
+    datecover = forms.DateField(input_formats='%Y-%m-%d')
+    datecover.widget.attrs.update({'class':'form-control', 'Placeholder':'YYYY-MM-DD'})
+# class CarForm(forms.Form):
+#     license =
+#     date_register = 
+#     # province brand
+#     model =
+#     chassis_on =
+#     displacement =
+#     gvw =
+#     seat =
+#     type =
+
+

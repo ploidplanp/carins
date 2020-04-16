@@ -1,0 +1,52 @@
+{% extends "base.html" %} {% block content %}
+<style>
+    .bdl {
+        border-left: 10px solid #84a9ac;
+        padding-left: 3%;
+    }
+    
+    .mycontract {
+        width: 90%;
+    }
+    
+    .mybtn {
+        border-color: #639a67;
+    }
+    
+    .mybtn:hover {
+        background-color: #639a67;
+        border-color: #639a67;
+    }
+</style>
+
+<div class="container">
+    {% if msg %}
+        <h1 class="bdl">ลูกค้าใหม่</h1><br>
+        {{msg}}
+    {% else %}
+        <h1 class="bdl">เพิ่มข้อมูลรถ</h1>
+    {% endif %}
+    <form action="{% url 'add_car' %}" method='POST' class="mt-5">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                <label for="">{{form.fname.label}}</label> {{form.fname}}
+            </div>
+            <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                <label for="">{{form.lname.label}}</label> {{form.lname}}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="">{{form.card_id.label}}</label> {{form.card_id}}
+        </div>
+        <div class="form-group">
+            <label for="">{{form.address.label}}</label> {{form.address}}
+        </div>
+        <div class="form-group">
+            <label for="">{{form.phone.label}}</label> {{form.phone}}
+        </div>
+        <button type="submit" class="btn btn-outline-success mybtn mb-5">เพิ่ม</button>
+    </form>
+</div>
+{% endblock %}
