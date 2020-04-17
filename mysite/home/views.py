@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
 from django.template.context_processors import request
+from django.views.decorators.csrf import csrf_exempt
 
 from home.models import Car_Use_Type_Table, Company, Person, Premium_Table
 

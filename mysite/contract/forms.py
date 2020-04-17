@@ -1,68 +1,72 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 from psycopg2.sql import Placeholder
 
-# from .models import Contract, Insurance_Policy
-from .models import Province
 from contract.models import Compulsory_Insurance, Customer
+
+from .models import Brand, Company, Province
 
 type_choice = (
     ('รถยนต์', 'รถยนต์'), ('รถจักรยานยนต์', 'จักรยานยนต์')
 )
+inscode_choice = (
+    ('1', '1'), ('2', '2'), ('3', '3'), ('3+', '3+')
+)
+province_choice = tuple(Province.objects.all().values_list())
+brand_choice = tuple(Brand.objects.all().values_list())
 
 class Insurance_PolicyFrom(forms.Form):
-    owner_fname = forms.CharField(label='ชื่อเจ้าของรถ', max_length=255)
-    owner_lname = forms.CharField(label='นามสกุล', max_length=255)
-    license = forms.CharField(label='เลขทะเบียนรถ', max_length=7)
+    # ข้อมูลเจ้าของรถ
+    owner_cardid = forms.CharField(label='เลขบัตรประชาชนเจ้าของรถ', max_length=13, widget=forms.TextInput(attrs={'class':'form-control'}))
+    owner_fname = forms.CharField(label='ชื่อเจ้าของรถ', max_length=255, widget=forms.TextInput(attrs={'class':'form-control'}))
+    owner_lname = forms.CharField(label='นามสกุลเจ้าของรถ', max_length=255, widget=forms.TextInput(attrs={'class':'form-control'}))
+    owner_phone = forms.CharField(label='เบอร์โทรศัพท์', max_length=10, widget=forms.TextInput(attrs={'class':'form-control'}))
+    owner_address = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control' }), label='ที่อยู่')
 
-    car_register = forms.CharField(label='วันที่จดทะเบียน', max_length=7)
-    model = forms.CharField(label='รุ่นรถ', max_length=255)
-    cartype = forms.CharField(label='ประเภทรถ', max_length=13)
-    displacement = forms.CharField(label='น้ำหนักรวม', max_length=7)
-    gvw = forms.CharField(label='น้ำหนักรวม', max_length=10)
-    seat = forms.CharField(label='น้ำหนักรวม', max_length=10)
+    # ข้อมูลรถ
+    car_license = forms.CharField(label='เลขทะเบียนรถ', max_length=7, widget=forms.TextInput(attrs={'class':'form-control'}))
+    car_province = forms.ChoiceField(label='จังหวัด', choices=province_choice)
+    car_type = forms.ChoiceField(label='ประเภทรถ', choices=type_choice)
+    car_register = forms.DateField(label='วันที่จดทะเบียน', input_formats=['%Y-%m-%d'])
+    car_brand = forms.ChoiceField(label='ยี่ห้อรถ', choices=brand_choice)
+    car_model = forms.CharField(label='รุ่นรถ', max_length=255, widget=forms.TextInput(attrs={'class':'form-control'}))
+    car_chassis = forms.CharField(label='เลขตัวรถ', max_length=17, widget=forms.TextInput(attrs={'class':'form-control'}))
+    car_displacement = forms.IntegerField(label='ขนาดเครื่อง')
+    car_gvw = forms.IntegerField(label='น้ำหนักรวม')
+    car_seat = forms.IntegerField(label='จำนวนที่นั่ง')
+    
+    # ข้อมูลประกัน
+    contract_insid = forms.CharField(label='เลขที่กรมธรรม์ประกัน', max_length=50, widget=forms.TextInput(attrs={'class':'form-control'}))
+    contract_cover_start = forms.DateField(label='วันเริ่มคุ้มครอง', input_formats=['%Y-%m-%d'])
+    contract_cover_end = forms.DateField(label='วันสิ้นสุดคุ้มครอง', input_formats=['%Y-%m-%d'])
+    contract_code = forms.ChoiceField(label='ประเภทประกัน', choices=inscode_choice)
+    contract_price = forms.FloatField(label='ราคา')
 
-    owner_card_id = forms.CharField(label='เลขบัตรประชาชนเจ้าของรถ', max_length=13)
-    owner_address = forms.CharField(widget=forms.Textarea, label='ที่อยู่')
-    owner_phone = forms.CharField(label='เบอร์โทรศัพท์', max_length=10)
+    # ข้อมูลเจ้าของรถ
+    cus_cardid = forms.CharField(label='เลขบัตรประชาชนลูกค้า', max_length=13, widget=forms.TextInput(attrs={'class':'form-control'}))
+    cus_fname = forms.CharField(label='ชื่อลูกค้า', max_length=255, widget=forms.TextInput(attrs={'class':'form-control'}))
+    cus_lname = forms.CharField(label='นามสกุลลูกค้า', max_length=255, widget=forms.TextInput(attrs={'class':'form-control'}))
+    cus_phone = forms.CharField(label='เบอร์โทรศัพท์', max_length=10, widget=forms.TextInput(attrs={'class':'form-control'}))
+    cus_address = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control' }), label='ที่อยู่')
 
-    cus_fname = forms.CharField(label='ชื่อผู้ติดต่อ', max_length=13)
-    cus_lname = forms.CharField(label='นามสกุล', max_length=13)
-    cus_card_id = forms.CharField(label='เลขบัตรประชาชนผู้ติดต่อ', max_length=13)
-    cus_address = forms.CharField(widget=forms.Textarea, label='ที่อยู่ผู้ติดต่อ', max_length=13)
-    cus_phone = forms.CharField(label='เบอร์โทรศัพท์ผู้ติดต่อ', max_length=13)
+    car_register.widget.attrs.update({'class':'form-control', 'Placeholder':'YYYY-MM-DD'})
+    contract_cover_start.widget.attrs.update({'class':'form-control', 'Placeholder':'YYYY-MM-DD'})
+    contract_cover_end.widget.attrs.update({'class':'form-control', 'Placeholder':'YYYY-MM-DD'})
+    car_province.widget.attrs.update({'class':'form-control'})
+    car_type.widget.attrs.update({'class':'form-control'})
+    car_brand.widget.attrs.update({'class':'form-control'})
+    car_displacement.widget.attrs.update({'class':'form-control'})
+    car_gvw.widget.attrs.update({'class':'form-control'})
+    car_seat.widget.attrs.update({'class':'form-control'})
+    contract_code.widget.attrs.update({'class':'form-control'})
+    contract_price.widget.attrs.update({'class':'form-control'})
 
-    allfields = [owner_fname, owner_lname, license, car_register, model, cartype,
-    displacement, gvw, seat, owner_card_id, owner_address, owner_phone, cus_fname, cus_lname,
-    cus_card_id, cus_address, cus_phone]
-
-    for i in allfields:
-        i.widget.attrs.update({'class':'form-control'})
-
-    license.widget.attrs.update({'class':'form-control', 'Placeholder':'อท1616'})
-
-class CustomerForm(forms.Form):
-    fname = forms.CharField(label='ชื่อ', max_length=255, widget=forms.TextInput(attrs={'class':'form-control'}))
-    lname = forms.CharField(label='นามสกุล', max_length=255, widget=forms.TextInput(attrs={'class':'form-control'}))
-    card_id = forms.CharField(label='เลขบัตรประชาชน', max_length=13, widget=forms.TextInput(attrs={'class':'form-control'}))
-    address = forms.CharField(label='ที่อยู่', widget=forms.Textarea(attrs={'class':'form-control'}))
-    phone = forms.CharField(label='เบอร์โทรศัพท์', max_length=10, widget=forms.TextInput(attrs={'class':'form-control'}), )
-
-    phone.widget.attrs.update({'class':'form-control', 'Placeholder':'เบอร์โทรศัพท์ 10 หลัก'})
-
-class ContractFrom(forms.Form):
-    contractno = forms.CharField(label='เลขที่กรมธรรม์', max_length=50, widget=forms.TextInput(attrs={'class':'form-control'}))
-    datecover = forms.DateField(input_formats='%Y-%m-%d')
-    datecover.widget.attrs.update({'class':'form-control', 'Placeholder':'YYYY-MM-DD'})
-# class CarForm(forms.Form):
-#     license =
-#     date_register = 
-#     # province brand
-#     model =
-#     chassis_on =
-#     displacement =
-#     gvw =
-#     seat =
-#     type =
-
-
+    def clean_contract_cover_end(self):
+        data = self.cleaned_data.get('contract_cover_end')
+        if self.cleaned_data.get('contract_cover_start') >= data:
+            raise ValidationError(
+                'วันสิ้นสุดวันคุ้มครองต้องไม่ย้อนหลัง',
+                code='invalid'
+            )
+        return data

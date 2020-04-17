@@ -14,6 +14,7 @@
     <h1 class="bdl">เพิ่มกรมธรรม์พ.ร.บ.</h1>
     <div class="container mycontract">
         <form action="{% url 'new_compulsory' %}" method='POST' class="mt-5">
+        
             {% csrf_token %}
             <h4>ข้อมูลพื้นฐาน</h4><br>
             <div class="form-row mt-4">
@@ -32,7 +33,7 @@
                 </div>
                 <div class="form-group col-md-4">
                     <button type="submit" class="btn btn-warning mb-2" name="search_license">ตรวจสอบทะเบียนรถ</button> {% if car_mes == 'not' %}
-                    <small class="form-text text-muted">ไม่มีข้อมูลรถในระบบ <a href="{% url 'add_customer' %}">คลิกเพื่อเพิ่มข้อมูลรถ</a></small> {% elif car_mes == 'car' %}
+                    <small class="form-text text-muted">ไม่มีข้อมูลรถในระบบ <a href="{% url 'add_car' %}">คลิกเพื่อเพิ่มข้อมูลรถ</a></small> {% elif car_mes == 'car' %}
                     <small class="form-text text-muted">เรามีรถคุณแล้ว:'D</small> {% endif %}
                 </div>
             </div>
