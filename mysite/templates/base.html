@@ -71,7 +71,7 @@
                 {% if user.is_superuser == 0 %}
                 {% comment %} เมนูสำหรับคนที่เป็น user ธรรมดา {% endcomment %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#">รายการกรมธรรม์</a>
+                        <a class="nav-link" href="{% url 'contract_search' %}">รายการกรมธรรม์</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'report_expire' %}">รายงานกรมธรรม์หมดอายุ</a>

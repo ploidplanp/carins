@@ -1,6 +1,7 @@
-from builtins import object
-from datetime import date
 import json
+# -----------------
+from builtins import object
+from datetime import date, timedelta
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -10,9 +11,10 @@ from django.shortcuts import redirect, render
 from django.template.context_processors import request
 from django.views.decorators.csrf import csrf_exempt
 
-from contract.models import Compulsory_Insurance, Contract, Customer
-from home.models import Brand, Company, Person, Premium_Table, Province, Car_Use_Type_Table
-from contract.models import Owner, Car
+from contract.models import (Car, Compulsory_Insurance, Contract, Customer,
+                             Insurance_Policy, Owner)
+from home.models import (Brand, Car_Use_Type_Table, Company, Person,
+                         Premium_Table, Province)
 from home.views import profile
 
 from .forms import Insurance_PolicyFrom
@@ -59,7 +61,7 @@ def add_customer(request):
 # หน้าเพิ่มกรมธรรม์ ประกัน
 def new_policy(request):
     companylist = Company.objects.all()
-    caruselist = Car_Use_Type_Table.objects.all()
+    caruselist = Car_Use_Type_Table.objects.all().order_by('code')
     if request.method == 'POST':
         form = Insurance_PolicyFrom(request.POST)
         if form.is_valid():
@@ -78,6 +80,42 @@ def new_policy(request):
     return render(request, 'insurance_policy/new_policy.html', context=context)
 
 
+@login_required
+# หน้าเพิ่มกรมธรรม์ พ.ร.บ.
+def new_compulsory(request):
+    return render(request, 'compulsory_insurance/new_compulsory.html')
+
+
+def contract_search(request):
+    userid = request.user.id
+    me = Person.objects.get(user_id=userid) #ตัวเรา=userที่ login
+    takecare = Customer.objects.filter(seller_id=me.id) #ลูกค้าที่ userดูแล
+    takecarelistid = []
+    for i in takecare:
+        takecarelistid.append(i.id)
+    # takecarelistid คือ ไอดีลูกค้าที่ user ดูแล
+
+    #กรมธรรม์ทั้งหมดของลูกค้าที่ user ดูแล และเพิ่ม3 วันล่าสุด
+    cusbuycontract = Contract.objects.filter(customer_id__in=takecarelistid, register_date__gte=date.today() - timedelta(days=3))
+    cusbuycontractlistid = [] 
+    for i in cusbuycontract:
+        cusbuycontractlistid.append(i) #ไอดีกรมธรรม์ทั้งหมดที่ลูกค้าที่ user ดูแล
+
+    # print('ลูกค้าที่ซื้อพรบ')
+    cusbuycoumpulsory = Compulsory_Insurance.objects.filter(contract_id__in=cusbuycontractlistid)
+    # print('ลูกค้าที่ซื้อประกัน')
+    cusbuyinsurance = Insurance_Policy.objects.filter(contract_id__in=cusbuycontractlistid)
+
+    context = {
+        'cusbuycoumpulsory': cusbuycoumpulsory,
+        'cusbuyinsurance': cusbuyinsurance
+    }
+    return render(request, 'contract.html', context=context)
+
+
+
+
+# request ข้อมูล ajax
 @csrf_exempt
 def getowner(request):
     data = json.loads(request.body)
@@ -175,9 +213,3 @@ def getcar(request):
     }
     
     return JsonResponse(response, status=200)
-
-
-@login_required
-# หน้าเพิ่มกรมธรรม์ พ.ร.บ.
-def new_compulsory(request):
-    return render(request, 'compulsory_insurance/new_compulsory.html')

@@ -42,6 +42,7 @@ def profile(request):
     print(request.user)
     print(request.user.id)
     profile = Person.objects.filter(user=request.user)
+    print(profile)
     
     context = {
         'profile': profile
