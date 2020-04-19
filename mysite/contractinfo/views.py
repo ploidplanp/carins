@@ -41,7 +41,7 @@ def ins_search(request):
         cusbuycontractlistid.append(i) #ไอดีกรมธรรม์ทั้งหมดของลูกค้าที่ user ดูแล
 
      # print('ลูกค้าที่ซื้อประกัน')
-    cusbuyinsurance = Insurance_Policy.objects.filter(contract_id__in=cusbuycontractlistid, contract__status='Available')
+    cusbuyinsurance = Insurance_Policy.objects.filter(contract_id__in=cusbuycontractlistid, contract__status='Available').order_by('-id')
 
     if request.method == 'POST':
         if 'search1' in request.POST and searchcontractid != '':

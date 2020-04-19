@@ -1,4 +1,5 @@
 import json
+from datetime import date
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -23,56 +24,113 @@ def report_expire(request):
     return render(request, template_name='report_ex.html')
 
 
-
-@login_required
-# หน้าเพิ่มผู้ติดต่อ
-def add_customer(request):
-    person = Person.objects.get(user_id=request.user.id)
-    print(person.id)
-    msg = ''
-    if request.method == 'POST':
-        form = CustomerForm(request.POST)
-        if form.is_valid():
-            print(form.cleaned_data) # ทั้งก้อน
-            customer = Customer.objects.create(
-                card_id = form.cleaned_data['card_id'],
-                fname = form.cleaned_data['fname'],
-                lname = form.cleaned_data['lname'],
-                phone = form.cleaned_data['phone'],
-                address = form.cleaned_data['address'],
-                seller = person # คนที่ดูแลลูกค้ารายนี้ก็คือคนที่ลอคอินอยู่
-            )
-            msg = 'We have you:\'D'
-    else:
-        form = CustomerForm()
-
-    context = {
-        'form': form,
-        'msg': msg
-    }
-    return render(request, 'management/customer_add.html', context=context)
-
-
 @login_required
 # หน้าเพิ่มกรมธรรม์ ประกัน
 def new_policy(request):
+    userid = request.user.id
+    me = Person.objects.get(user_id=userid) #ตัวเรา=userที่ login
     companylist = Company.objects.all()
     caruselist = Car_Use_Type_Table.objects.all().order_by('code')
     if request.method == 'POST':
         form = Insurance_PolicyFrom(request.POST)
         if form.is_valid():
             print(form.cleaned_data) # ทั้งก้อน
-            # try:
-            #     owner = Owner.objects.get(card_id=form.cleaned_data['owner_cardid'])
-            # except Owner.DoesNotExist:
-            #     owner = Owner.objects.create()
+            print('-----------')
 
+            try:
+                owner = Owner.objects.get(card_id=form.cleaned_data['owner_cardid'])
+                owner.card_id = form.cleaned_data['owner_cardid']
+                owner.fname = form.cleaned_data['owner_fname']
+                owner.lname = form.cleaned_data['owner_lname']
+                owner.phone = form.cleaned_data['owner_phone']
+                owner.address = form.cleaned_data['owner_address']
+                owner.save()
+            except Owner.DoesNotExist:
+                owner = Owner.objects.create(
+                    card_id = form.cleaned_data['owner_cardid'],
+                    fname= form.cleaned_data['owner_fname'],
+                    lname = form.cleaned_data['owner_lname'],
+                    phone = form.cleaned_data['owner_phone'],
+                    address = form.cleaned_data['owner_address'],
+                )
+            # myowner = Owner.objects.get(card_id=form.cleaned_data['owner_cardid'])
 
-        else:
-            print('invalid')
+            try:
+                car = Car.objects.get(license_on=form.cleaned_data['car_license'], province=form.cleaned_data['car_province'], type=form.cleaned_data['car_type'])
+                car.license_on = form.cleaned_data['car_license']
+                car.date_register = form.cleaned_data['car_register']
+                car.province_id = form.cleaned_data['car_province']
+                car.brand_id = form.cleaned_data['car_brand']
+                car.model = form.cleaned_data['car_model']
+                car.chassis_on = form.cleaned_data['car_chassis']
+                car.displacement = form.cleaned_data['car_displacement']
+                car.gvw = form.cleaned_data['car_gvw']
+                car.seat = form.cleaned_data['car_seat']
+                car.type = form.cleaned_data['car_type']
+                car.owner_id = owner.id
+                car.save()
+            except Car.DoesNotExist:
+                car = Car.objects.create(
+                    license_on = form.cleaned_data['car_license'],
+                    date_register = form.cleaned_data['car_register'],
+                    province_id = form.cleaned_data['car_province'],
+                    brand_id = form.cleaned_data['car_brand'],
+                    model = form.cleaned_data['car_model'],
+                    chassis_on = form.cleaned_data['car_chassis'],
+                    displacement = form.cleaned_data['car_displacement'],
+                    gvw = form.cleaned_data['car_gvw'],
+                    seat = form.cleaned_data['car_seat'],
+                    type = form.cleaned_data['car_type'],
+                    owner_id = owner.id
+                )
+            # mycar = Car.objects.get(license_on=form.cleaned_data['car_license'], province=form.cleaned_data['car_province'], type=form.cleaned_data['car_type'])
+
+            try:
+                cus = Customer.objects.get(fname=form.cleaned_data['cus_fname'], lname=form.cleaned_data['cus_lname'])
+                cus.card_id = form.cleaned_data['cus_cardid']
+                cus.fname = form.cleaned_data['cus_fname']
+                cus.lname = form.cleaned_data['cus_lname']
+                cus.phone = form.cleaned_data['cus_phone']
+                cus.address = form.cleaned_data['cus_address']
+                cus.seller_id = me.id
+                cus.save()
+            except Customer.DoesNotExist:
+                cus = Customer.objects.create(
+                    card_id = form.cleaned_data['cus_cardid'],
+                    fname = form.cleaned_data['cus_fname'],
+                    lname = form.cleaned_data['cus_lname'],
+                    phone = form.cleaned_data['cus_phone'],
+                    address = form.cleaned_data['cus_address'],
+                    seller_id = me.id
+                )
+            # mycus = Customer.objects.get(fname=form.cleaned_data['cus_fname'], lname=form.cleaned_data['cus_lname'])
+
+            if form.cleaned_data['contract_cover_end'] >= date.today():
+                contract_status = 'Available'
+            else:
+                contract_status = 'Unavailable'
+            
+            contract = Contract.objects.create(
+                register_date = date.today(),
+                status = contract_status,
+                date_start_cover = form.cleaned_data['contract_cover_start'],
+                date_end_cover = form.cleaned_data['contract_cover_end'],
+                price = form.cleaned_data['contract_price'],
+                customer_id = cus.id,
+                company_id = request.POST.get('companySelect'),
+                car_id = car.id
+            )
+            lastcontract = Contract.objects.latest('id')
+
+            newins = Insurance_Policy.objects.create(
+                insurance_id = form.cleaned_data['contract_insid'],
+                insurance_car_use_type_id = request.POST.get('caruseSelect'),
+                insurance_code = form.cleaned_data['contract_code'],
+                contract_id = lastcontract.id
+            )
+            return redirect('ins_search')
     else:
         form = Insurance_PolicyFrom()
-        print('nothing')
 
     context = {
         'form': form,

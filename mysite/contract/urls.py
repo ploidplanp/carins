@@ -7,5 +7,5 @@ urlpatterns = [
     path('new/compulsory', views.new_compulsory, name='new_compulsory'),
     path('getowner/', views.getowner),
     path('getcar/', views.getcar),
-    path('getcus/', views.getcus)
+    path('getcus/', views.getcus),
 ]
