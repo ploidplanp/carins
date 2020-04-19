@@ -86,10 +86,10 @@ def comp_search(request):
     
     if request.method == 'POST':
         if 'search1' in request.POST and searchcontractid != '':
-            cusbuycoumpulsory = Compulsory_Insurance.objects.filter(contract_id__in=cusbuycontractlistid, contract__status='Available', compulsory_id=searchcontractid)
+            cusbuycoumpulsory = Compulsory_Insurance.objects.filter(contract_id__in=cusbuycontractlistid, compulsory_id=searchcontractid)
             msg = 'ค้นหากรมธรรม์เลขที่ %s' %(searchcontractid)
         elif 'search2' in request.POST and searchoname != '' and searchosur != '' and searchlicense != '':
-            cusbuycoumpulsory = Compulsory_Insurance.objects.filter(contract_id__in=cusbuycontractlistid, contract__status='Available', contract__car__license_on=searchlicense, contract__car__owner__fname=searchoname, contract__car__owner__lname=searchosur)
+            cusbuycoumpulsory = Compulsory_Insurance.objects.filter(contract_id__in=cusbuycontractlistid, contract__car__license_on=searchlicense, contract__car__owner__fname=searchoname, contract__car__owner__lname=searchosur)
             msg = 'ค้นหากรมธรรม์ทะเบียนรถ %s ผู้เอาประกัน %s %s' %(searchlicense, searchoname, searchosur)
 
     context = {

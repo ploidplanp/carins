@@ -81,55 +81,6 @@
     
     <small>{{msg}}</small>
     
-    {% comment %} {% for c in cusbuycoumpulsory %}
-    <div class="container mycontainer mt-5">
-        <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">ข้อมูลพื้นฐาน</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">ข้อมูลรถ</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#" role="tab" aria-controls="profile" aria-selected="false">แก้ไข</a>
-            </li>
-        </ul>
-        <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"><br>
-                <p><b>เลขที่กรมธรรม์พ.ร.บ. {{c.compulsory_id}}</b> <span><small class="card-text text-secondary">(สถานะ: {{c.contract.status}})</small></span></p>
-                <div class="row">
-                    <div class="col-6">
-                        <p>ทะเบียนรถ: <b>{{c.contract.car}}</b></p>
-                        <p>ผู้เอาประกัน: {{c.contract.car.owner}} ({{c.contract.car.owner.phone}})</p>
-                        <p>ติดต่อลูกค้า: {{c.contract.customer}} ({{c.contract.customer.phone}})</p>
-                    </div>
-                    <div class="col-6">
-                        <p>วันเริ่มคุ้มครอง: {{c.contract.date_start_cover}}</p>
-                        <p>วันสิ้นสุดคุ้มครอง: <i>{{c.contract.date_end_cover}}</i></p>
-                        <p>บริษัท: {{c.contract.company}}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab"><br>
-                <div class="row">
-                    <div class="col-6">
-                        <p>ยี่ห้อ: {{c.contract.car.brand}}</p>
-                        <p>รุ่น: {{c.contract.car.model}}</p>
-                        <p>ประเภท: {{c.contract.car.type}}</p>
-                        <p>วันที่จดทะเบียน: {{c.contract.car.date_register}}</p>
-                    </div>
-                    <div class="col-6">
-                        <p>เลขตัวรถ: {{c.contract.car.chasis_on}}</p>
-                        <p>ขนาดเครื่อง: {{c.contract.car.displacement}}</p>
-                        <p>ขนาดเครื่อง: {{c.contract.car.gvw}}</p>
-                        <p>ขนาดเครื่อง: {{c.contract.car.seat}}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endfor%} {% endcomment %}
-    
     {% for c in cusbuyinsurance %}
     <div class="container mycontainer mt-5">
         <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
@@ -156,6 +107,7 @@
                         <p>วันเริ่มคุ้มครอง: {{c.contract.date_start_cover}}</p>
                         <p>วันสิ้นสุดคุ้มครอง: <i>{{c.contract.date_end_cover}}</i></p>
                         <p>บริษัท: {{c.contract.company}} (ป. {{c.insurance_code}})</p>
+                        <p>ราคา: {{c.contract.price}} บาท</p>
                     </div>
                 </div>
             </div>
