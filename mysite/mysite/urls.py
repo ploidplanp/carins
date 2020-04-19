@@ -24,4 +24,5 @@ urlpatterns = [
     path('logout', views.mylogout, name='mylogout'),
     path('home/', include('home.urls')),
     path('contract/', include('contract.urls')),
+    path('contractinfo/', include('contractinfo.urls'))
 ]
