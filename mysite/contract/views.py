@@ -1,175 +1,245 @@
-# from os import name
-# from os.path import normcase
-from builtins import object
+import json
 from datetime import date
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models.expressions import OrderBy
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render
 from django.template.context_processors import request
+from django.views.decorators.csrf import csrf_exempt
 
-from contract.models import Car, Compulsory_Insurance, Contract, Customer
-from home.models import Brand, Company, Person, Premium_Table, Province
+from contract.models import (Car, Compulsory_Insurance, Contract, Customer,
+                             Insurance_Policy, Owner)
+from home.models import (Brand, Car_Use_Type_Table, Company, Person,
+                         Premium_Table, Province)
 
-from .forms import CustomerForm
+from .forms import Insurance_PolicyFrom
 
 
 # Create your views here.
-
-@login_required
-# หน้าเพิ่มผู้ติดต่อ
-def add_customer(request):
-    person = Person.objects.get(user_id=request.user.id)
-    print(person.id)
-    msg = ''
-    if request.method == 'POST':
-        form = CustomerForm(request.POST)
-        if form.is_valid():
-            print(form.cleaned_data) # ทั้งก้อน
-            customer = Customer.objects.create(
-                card_id = form.cleaned_data['card_id'],
-                fname = form.cleaned_data['fname'],
-                lname = form.cleaned_data['lname'],
-                phone = form.cleaned_data['phone'],
-                address = form.cleaned_data['address'],
-                seller = person # คนที่ดูแลลูกค้ารายนี้ก็คือคนที่ลอคอินอยู่
-            )
-            msg = 'We have you:\'D'
-    else:
-        form = CustomerForm()
-    context = {
-        'form': form,
-        'msg': msg
-    }
-    return render(request, 'management/customer_add.html', context=context)
-
-def add_car(request):
-    return render(request, 'management/car_add.html', context=context)
 
 
 @login_required
 # หน้าเพิ่มกรมธรรม์ ประกัน
 def new_policy(request):
+    userid = request.user.id
+    me = Person.objects.get(user_id=userid) #ตัวเรา=userที่ login
+    companylist = Company.objects.all()
+    caruselist = Car_Use_Type_Table.objects.all().order_by('code')
     if request.method == 'POST':
         form = Insurance_PolicyFrom(request.POST)
         if form.is_valid():
-            print(form.cleaned_data)
-            return HttpResponse('thank you')
+            print(form.cleaned_data) # ทั้งก้อน
+            print('-----------')
+
+            try:
+                owner = Owner.objects.get(card_id=form.cleaned_data['owner_cardid'])
+                owner.card_id = form.cleaned_data['owner_cardid']
+                owner.fname = form.cleaned_data['owner_fname']
+                owner.lname = form.cleaned_data['owner_lname']
+                owner.phone = form.cleaned_data['owner_phone']
+                owner.address = form.cleaned_data['owner_address']
+                owner.save()
+            except Owner.DoesNotExist:
+                owner = Owner.objects.create(
+                    card_id = form.cleaned_data['owner_cardid'],
+                    fname= form.cleaned_data['owner_fname'],
+                    lname = form.cleaned_data['owner_lname'],
+                    phone = form.cleaned_data['owner_phone'],
+                    address = form.cleaned_data['owner_address'],
+                )
+            # myowner = Owner.objects.get(card_id=form.cleaned_data['owner_cardid'])
+
+            try:
+                car = Car.objects.get(license_on=form.cleaned_data['car_license'], province=form.cleaned_data['car_province'], type=form.cleaned_data['car_type'])
+                car.license_on = form.cleaned_data['car_license']
+                car.date_register = form.cleaned_data['car_register']
+                car.province_id = form.cleaned_data['car_province']
+                car.brand_id = form.cleaned_data['car_brand']
+                car.model = form.cleaned_data['car_model']
+                car.chassis_on = form.cleaned_data['car_chassis']
+                car.displacement = form.cleaned_data['car_displacement']
+                car.gvw = form.cleaned_data['car_gvw']
+                car.seat = form.cleaned_data['car_seat']
+                car.type = form.cleaned_data['car_type']
+                car.owner_id = owner.id
+                car.save()
+            except Car.DoesNotExist:
+                car = Car.objects.create(
+                    license_on = form.cleaned_data['car_license'],
+                    date_register = form.cleaned_data['car_register'],
+                    province_id = form.cleaned_data['car_province'],
+                    brand_id = form.cleaned_data['car_brand'],
+                    model = form.cleaned_data['car_model'],
+                    chassis_on = form.cleaned_data['car_chassis'],
+                    displacement = form.cleaned_data['car_displacement'],
+                    gvw = form.cleaned_data['car_gvw'],
+                    seat = form.cleaned_data['car_seat'],
+                    type = form.cleaned_data['car_type'],
+                    owner_id = owner.id
+                )
+            # mycar = Car.objects.get(license_on=form.cleaned_data['car_license'], province=form.cleaned_data['car_province'], type=form.cleaned_data['car_type'])
+
+            try:
+                cus = Customer.objects.get(fname=form.cleaned_data['cus_fname'], lname=form.cleaned_data['cus_lname'])
+                cus.card_id = form.cleaned_data['cus_cardid']
+                cus.fname = form.cleaned_data['cus_fname']
+                cus.lname = form.cleaned_data['cus_lname']
+                cus.phone = form.cleaned_data['cus_phone']
+                cus.address = form.cleaned_data['cus_address']
+                cus.seller_id = me.id
+                cus.save()
+            except Customer.DoesNotExist:
+                cus = Customer.objects.create(
+                    card_id = form.cleaned_data['cus_cardid'],
+                    fname = form.cleaned_data['cus_fname'],
+                    lname = form.cleaned_data['cus_lname'],
+                    phone = form.cleaned_data['cus_phone'],
+                    address = form.cleaned_data['cus_address'],
+                    seller_id = me.id
+                )
+            # mycus = Customer.objects.get(fname=form.cleaned_data['cus_fname'], lname=form.cleaned_data['cus_lname'])
+
+            if form.cleaned_data['contract_cover_end'] >= date.today():
+                contract_status = 'Available'
+            else:
+                contract_status = 'Unavailable'
+            
+            contract = Contract.objects.create(
+                register_date = date.today(),
+                status = contract_status,
+                date_start_cover = form.cleaned_data['contract_cover_start'],
+                date_end_cover = form.cleaned_data['contract_cover_end'],
+                price = form.cleaned_data['contract_price'],
+                customer_id = cus.id,
+                company_id = request.POST.get('companySelect'),
+                car_id = car.id
+            )
+            lastcontract = Contract.objects.latest('id')
+
+            newins = Insurance_Policy.objects.create(
+                insurance_id = form.cleaned_data['contract_insid'],
+                insurance_car_use_type_id = request.POST.get('caruseSelect'),
+                insurance_code = form.cleaned_data['contract_code'],
+                contract_id = lastcontract.id
+            )
+            return redirect('ins_search')
     else:
         form = Insurance_PolicyFrom()
 
-    brandlist = Brand.objects.all()
-    provincelist = Province.objects.all()
     context = {
         'form': form,
-        'brandlist': brandlist,
-        'provincelist': provincelist
+        'companylist': companylist,
+        'caruselist': caruselist
     }
     return render(request, 'insurance_policy/new_policy.html', context=context)
+
 
 @login_required
 # หน้าเพิ่มกรมธรรม์ พ.ร.บ.
 def new_compulsory(request):
-    provincelist = Province.objects.all().order_by('name')
-    companylist = Company.objects.all().order_by('name')
-    premiumlist = Premium_Table.objects.all().order_by('code')
+    return render(request, 'compulsory_insurance/new_compulsory.html')
 
-    cusfname = request.POST.get('inputCusfname', '')
-    cuslname = request.POST.get('inputCuslname', '')
-    cus_mes = ''
-    car_mes = ''
 
-    carlicense = request.POST.get('inputLicense', '')
-    carprovince = request.POST.get('inputProvince', '')
-    
-    ownerfname = request.POST.get('inputOwnfname', '')
-    ownerlname = request.POST.get('inputOwnflname', '')
 
-    contractno = request.POST.get('contractno', '')
-    datecover = request.POST.get('datecover', '')
-    company = request.POST.get('companySelect', '')
-    premiumcode = request.POST.get('premiumSelect', '')
-    
+# request ข้อมูล ajax
+@csrf_exempt
+def getowner(request):
+    data = json.loads(request.body)
+    cardid = data['owner_cardid']
+    find = 'no'
+    try:
+        owner = Owner.objects.get(card_id=cardid)
+        ownername = owner.fname
+        ownersur = owner.lname
+        ownerphone = owner.phone
+        owneraddress = owner.address
+        find = 'yes'
+    except Owner.DoesNotExist:
+        print('no')
+        ownername = ''
+        ownersur = ''
+        ownerphone = ''
+        owneraddress = ''
 
-    if request.method == 'POST':
-        if 'search_license' in request.POST and carprovince != "Choose...":
-            print(carlicense)
-            print(carprovince)
-            try:
-                car = Car.objects.get(license_on=carlicense, province=carprovince)
-                carprovince = car.province.id
-                ownerfname = car.owner.fname
-                ownerlname = car.owner.lname
-                car_mes = "car"
-            except Car.DoesNotExist:
-                car_mes = 'not'
-
-        if 'search_customer' in request.POST:
-            try:
-                customer = Customer.objects.get(fname=cusfname, lname=cuslname)
-                cus_mes = 'customer'
-                car = Car.objects.get(license_on=carlicense, province=carprovince)
-                carprovince = car.province.id
-                ownerfname = car.owner.fname
-                ownerlname = car.owner.lname
-            except Customer.DoesNotExist:
-                cus_mes = 'not'
-    if 'new' in request.POST and (company != "Choose..." and premiumcode != 'Choose...' and contractno != '' and datecover != ''):
-        print(datecover)
-        print(contractno)
-        print(company)
-        print(premiumcode)
-
-        datecover = datecover.split('-')
-        print(datecover)
-        datelist = []
-        for i in datecover:
-            if i == datecover[0]:
-                datelist.append(int(i)+1)
-            else:
-                datelist.append(int(i))
-        print(datelist[0])
-        enddate = '%d-%d-%d' %(datelist[0], datelist[1], datelist[2])
-            
-        mycusid = Customer.objects.get(fname=cusfname, lname=cuslname)
-        mycar = Car.objects.get(license_on=carlicense, province=carprovince)
-
-        newcontract = Contract.objects.create(
-            register_date = date.today(),
-            status = 'Available',
-            date_start_cover = datecover,
-            date_end_cover = enddate,
-            customer_id = mycusid.id,
-            company_id = company,
-            car_id = mycar.id
-        )
-        lastcontract = Contract.objects.latest('id')
-        newcom = Compulsory_Insurance.objects.create(
-            compulsory_id = contractno,
-            compulsory_car_use_type_id = premiumcode,
-            contract_id = lastcontract.id
-        )
-
-    print(type(date(2021, 2, 5)))
-    print(type(datecover))
-
-    context = {
-        'provincelist': provincelist,
-        'companylist': companylist,
-        'premiumlist': premiumlist,
-        'cus_mes': cus_mes,
-        'cusfname': cusfname,
-        'cuslname': cuslname,
-        'car_mes': car_mes,
-        'carlicense': carlicense,
-        'carprovince': carprovince,
-        'ownerfname': ownerfname,
-        'ownerlname': ownerlname,
-        'contractno': contractno,
-        'datecover': datecover,
-        'company': company,
-        'premiumcode': premiumcode
+    response = {
+        'find': find,
+        'name': ownername,
+        'sur': ownersur,
+        'phone': ownerphone,
+        'address': owneraddress
     }
-    return render(request, 'compulsory_insurance/new_compulsory.html', context=context)
+    
+    return JsonResponse(response, status=200)
+
+@csrf_exempt
+def getcus(request):
+    data = json.loads(request.body)
+    name = data['cus_fname']
+    sur = data['cus_lname']
+    find = 'no'
+    try:
+        cus = Customer.objects.get(fname=name, lname=sur)
+        print(cus)
+        cuscardid = cus.card_id
+        cusphone = cus.phone
+        cusaddress = cus.address
+        find = 'yes'
+    except Customer.DoesNotExist:
+        print('no')
+        cuscardid = ''
+        cusphone = ''
+        cusaddress = ''
+
+    response = {
+        'find': find,
+        'cardid': cuscardid,
+        'phone': cusphone,
+        'address': cusaddress
+    }
+    
+    return JsonResponse(response, status=200)
+
+@csrf_exempt
+def getcar(request):
+    data = json.loads(request.body)
+    license = data['car_license']
+    province = data['car_province']
+    ctype = data['car_type']
+
+    find = 'no'
+
+    try:
+        car = Car.objects.get(license_on=license, province=province, type=ctype)
+        regist = car.date_register
+        brand = car.brand_id
+        model = car.model
+        chassis = car.chassis_on
+        displacement = car.displacement
+        gvw = car.gvw
+        seat = car.seat
+        find = 'yes'
+    except Car.DoesNotExist:
+        regist = ''
+        brand = 1
+        model = ''
+        chassis = ''
+        displacement = ''
+        gvw = ''
+        seat = ''
+
+    response = {
+        'find': find,
+        'regist': regist,
+        'brand': brand,
+        'model': model,
+        'chassis': chassis,
+        'displacement': displacement,
+        'gvw': gvw,
+        'seat': seat
+    }
+    
+    return JsonResponse(response, status=200)
+
+# -----------------

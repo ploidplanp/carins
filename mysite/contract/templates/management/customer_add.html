@@ -48,5 +48,9 @@
         </div>
         <button type="submit" class="btn btn-outline-success mybtn mb-5">เพิ่ม</button>
     </form>
+    <hr>
+    <form action="{% url 'add_customer' %}" method='POST' class="mt-5">
+        {{form2}}
+    </form>
 </div>
 {% endblock %}

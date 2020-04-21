@@ -1,4 +1,5 @@
 {% extends "base.html" %} {% block content %}
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <style>
     .bdl {
         border-left: 10px solid #84a9ac;
@@ -12,131 +13,198 @@
     .col {
         padding: 3%;
     }
+    
+    .red {
+        color: #c70039;
+    }
 </style>
 
 <div class="container">
+
     <h1 class="bdl">เพิ่มกรมธรรม์ประกันภัย</h1>
-    <div class="container" style="width: 75%;">
+    <form action="{% url 'new_policy' %}" method='POST' class="mt-5 mb-5">
+        {% csrf_token %} {{form.errors}}
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">ข้อมูลเจ้างของรถ</a>
+                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">ข้อมูลรถ</a>
+                <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">ข้อมูลประกัน</a>
+                <a class="nav-item nav-link" id="nav-about-tab" data-toggle="tab" href="#nav-about" role="tab" aria-controls="nav-about" aria-selected="false">ข้อมูลผู้ติดต่อ</a>
+            </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+            <!-- เจ้าของรถ -->
+            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                <div class="row form-group">
+                    <div class="col-lg-6 mt-3"><label for="">{{form.owner_cardid.label}}</label> {{form.owner_cardid}}</div>
+                    <div class="col-lg-6 mt-3"><button type="button" class="btn btn-warning mt-4" onclick="getOwn()">ตรวจสอบ</button></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4 mt-3">
+                        <label for="">{{form.owner_fname.label}}</label> {{form.owner_fname}}
+                    </div>
+                    <div class="form-group col-md-4 mt-3">
+                        <label for="">{{form.owner_lname.label}}</label> {{form.owner_lname}}
+                    </div>
+                    <div class="form-group col-md-4 mt-3">
+                        <label for="">{{form.owner_phone.label}}</label> {{form.owner_phone}}
+                    </div>
+                </div>
+                <label for="">{{form.owner_address.label}}</label>{{form.owner_address}}
 
-        <form action="{% url 'new_policy' %}" method='POST' class="mt-5">
-            {% csrf_token %} {% comment %} {{ form.as_ul }} {% endcomment %} {{ form.errors }}
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="form-group">
-                        <label for="">ชื่อเจ้าของรถ</label> {{ form.owner_fname }} {{ form.owner_fname.errors }}
-                    </div>
+            </div>
+
+            <!-- รถ -->
+            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                <div class="row form-group">
+                    <div class="col-lg-3 mt-3"><label for="">{{form.car_license.label}}</label> {{form.car_license}}</div>
+                    <div class="col-lg-3 mt-3"><label for="">{{form.car_province.label}}</label> {{form.car_province}}</div>
+                    <div class="col-lg-3 mt-3"><label for="">{{form.car_type.label}}</label> {{form.car_type}}</div>
+                    <div class="col-lg-3 mt-3"><button type="button" class="btn btn-warning mt-4" onclick="getCar()">ตรวจสอบ</button></div>
                 </div>
-                <div class="col-lg-6">
-                    <div class="form-group">
-                        <label for="">นามสกุล</label> {{ form.owner_lname }} {{ form.owner_lname.errors }}
+
+                <div class="row form-group mt-4">
+                    <div class="col-lg-4 mt-3"><label for="">{{form.car_register.label}}</label>
+                        <!-- {{form.car_register}} -->
+                        <input onchange="getDate()" class="form-control" type="date" name="{{form.car_register.name}}" id="{{form.car_register.id_for_label}}" value="form.car_register">
+
                     </div>
+                    <div class="col-lg-4 mt-3"><label for="">{{form.car_brand.label}}</label> {{form.car_brand}}</div>
+                    <div class="col-lg-4 mt-3"><label for="">{{form.car_model.label}}</label>{{form.car_model}}</div>
                 </div>
-                <div class="col-lg-6">
-                    <div class="form-group">
-                        <label for="">ทะเบียนรถ</label> {{ form.license }} {{ form.license.errors }}
-                    </div>
+
+                <div class="form-group mt-4">
+                    <label for="">{{form.car_chassis.label}}</label>{{form.car_chassis}}
                 </div>
-                <div class="col-lg-6">
-                    <div class="form-group">
-                        <label for="">จังหวัด</label>
-                        <select class="form-control" id="id_province">
-                            {% for p in provincelist %}
-                                <option value='{{p.id}}'>{{p.name}}</option>
+
+                <div class="row form-group mt-4">
+                    <div class="col-lg-4 mt-3"><label for="">{{form.car_displacement.label}}</label> {{form.car_displacement}}</div>
+                    <div class="col-lg-4 mt-3"><label for="">{{form.car_gvw.label}}</label> {{form.car_gvw}}</div>
+                    <div class="col-lg-4 mt-3"><label for="">{{form.car_seat.label}}</label>{{form.car_seat}}</div>
+                </div>
+            </div>
+
+            <!-- กรมธรรม์ -->
+            <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                <div class="row form-group">
+                    <div class="col-lg-6 mt-3"><label for="">{{form.contract_insid.label}}</label> {{form.contract_insid}}</div>
+                    <div class="col-lg-6 mt-3"></div>
+                    <div class="col-lg-4 mt-3">
+                        <label for="">บริษัท</label>
+                        <select class="form-control" name="companySelect" id="">
+                            {% for company in companylist %}
+                                <option value="{{company.id}}">{{company.name}}</option>
                             {% endfor %}
-                            
                         </select>
                     </div>
-                </div>
-            </div>
-
-            <button type="button" class="btn btn-outline-warning">ตรวจสอบ</button>
-
-            <!--  -->
-
-            <hr class="mt-5 mb-5">
-
-            <div class="row">
-                <div class="col col-lg-6 col-lg-6 col-sm-12 mycar">
-                    <h4>ข้อมูลรถ:</h4><br>
-                    <div class="form-group">
-                        <label for="">{{ form.car_register.label }}</label> {{ form.car_register }} {{ form.car_register.errors }}
-                    </div>
-                    <div class="form-group">
-                        <label for="">ยี่ห้อรถ</label>
-                        <select class="form-control" id="id_province">
-                            {% for b in brandlist %}
-                                <option value='{{b.id}}'>{{b.name}}</option>
+                    <div class="col-lg-4 mt-3">
+                        <label for="">รหัสการใช้รถประกัน</label>
+                        <select class="form-control" name="caruseSelect" id="">
+                            {% for use in caruselist %}
+                                <option value="{{use.id}}">{{use}}</option>
                             {% endfor %}
-                            
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="">รุ่นของรถ</label> {{ form.model }} {{ form.model.errors }}
+                    <div class="col-lg-4 mt-3"><label for="">{{form.contract_code.label}}</label> {{form.contract_code}}</div>
+                </div>
+
+                <div class="row form-group mt-4">
+                    <div class="col-lg-4 mt-3"><label for="">{{form.contract_cover_start.label}}</label>
+                        <input onchange="getDate()" class="form-control" type="date" name="{{form.contract_cover_start.name}}" id="{{form.contract_cover_start.id_for_label}}" value="form.contract_cover_start"></div>
+                    <div class="col-lg-4 mt-3"><label for="">{{form.contract_cover_end.label}}</label>
+                        <input onchange="getDate()" class="form-control" type="date" name="{{form.contract_cover_end.name}}" id="{{form.contract_cover_end.id_for_label}}" value="form.contract_cover_end">
+                        <small class="form-text red">{{form.contract_cover_end.errors}}</small>
                     </div>
-                    <div class="form-group">
-                        <label for="">ประเภทของรถ</label> {{ form.cartype }} {{ form.cartype.errors }}
-                    </div>
-                    <div class="form-group">
-                        <label for="">ขนาดเครื่องยนต์</label> {{ form.displacement }} {{ form.displacement.errors }}
-                    </div>
-                    <div class="form-group">
-                        <label for="">น้ำหนักรวม</label> {{ form.gvw }} {{ form.gvw.errors }}
-                    </div>
-                    <div class="form-group">
-                        <label for="">จำนวนที่นั่ง</label> {{ form.seat }} {{ form.seat.errors }}
+                    <div class="col-lg-4 mt-3"><label for="">{{form.contract_price.label}}</label> {{form.contract_price}}
                     </div>
                 </div>
 
-                <div class="col col-lg-6 col-lg-6 col-sm-12">
-                    <h4>ข้อมูลเจ้าของรถ:</h4><br>
-                    <div class="form-group">
-                        <label for="">เลขบัตรประชาชนเจ้าของรถ</label> {{ form.owner_card_id }} {{ form.owner_card_id.errors }}
-                    </div>
-                    <div class="form-group">
-                        <label for="">เบอร์โทรศัพท์เจ้าของรถ</label> {{ form.owner_phone }} {{ form.owner_phone.errors }}
-                    </div>
-                    <div class="form-group">
-                        <label for="">ที่อยู่เจ้าของรถ</label> {{ form.owner_address }} {{ form.owner_address.errors }}
-                    </div>
-
-                </div>
             </div>
 
-            <hr class="mt-5 mb-5">
-
-
-            <h4>ข้อมูลผู้ติดต่อ (ลูกค้า):</h4><br>
-            <div class="row">
-                <div class="col-6">
-                    <div class="form-group">
-                        <label for="">ชื่อผู้ติดต่อ</label> {{ form.cus_fname }} {{ form.cus_fname.errors }}
+            <!-- ผู้ติดต่อ -->
+            <div class="tab-pane fade" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
+                <div class="row form-group">
+                    <div class="form-group col-md-4 mt-3">
+                        <label for="">{{form.cus_fname.label}}</label> {{form.cus_fname}}
+                    </div>
+                    <div class="form-group col-md-4 mt-3">
+                        <label for="">{{form.cus_lname.label}}</label> {{form.cus_lname}}
+                    </div>
+                    <div class="col-lg-4 mt-3"><button type="button" class="btn btn-warning mt-4" onclick="getCus()">ตรวจสอบ</button></div>
+                </div>
+                <div class="form-row">
+                    <div class="col-lg-6 mt-3"><label for="">{{form.cus_cardid.label}}</label> {{form.cus_cardid}}</div>
+                    <div class="form-group col-md-4 mt-3">
+                        <label for="">{{form.cus_phone.label}}</label> {{form.cus_phone}}
                     </div>
                 </div>
-                <div class="col-6">
-                    <div class="form-group">
-                        <label for="">นามสกุลผู้ติดต่อ</label> {{ form.cus_lname }} {{ form.cus_lname.errors }}
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="form-group">
-                        <label for="">เลขบัตรประชาชนผู้ติดต่อ</label> {{ form.cus_card_id }} {{ form.cus_card_id.errors }}
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="form-group">
-                        <label for="">เบอร์โทรศัพท์ผู้ติดต่อ</label> {{ form.cus_phone }} {{ form.cus_phone.errors }}
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="form-group">
-                        <label for="">ที่อยู่ผู้ติดต่อ</label> {{ form.cus_address }} {{ form.cus_address.errors }}
-                    </div>
-                </div>
+                <label for="">{{form.cus_address.label}}</label>{{form.cus_address}} {% comment %} ---- {% endcomment %}
             </div>
+        </div>
 
-            <button type="submit" class="btn btn-outline-success mb-5">หน้าต่อไป</button>
-        </form>
+        <input class="btn btn-primary mt-4" type="submit" value="ตกลง">
 
-    </div>
+    </form>
+
 </div>
+
+<script>
+    function getDate() {
+        let x = document.getElementById('id_car_register').value
+        console.log(x)
+    }
+
+    function getOwn() {
+        axios.post('/contract/getowner/', {
+                owner_cardid: document.getElementById('id_owner_cardid').value
+            })
+            .then(function(response) {
+                document.getElementById('id_owner_fname').value = response.data.name
+                document.getElementById('id_owner_lname').value = response.data.sur
+                document.getElementById('id_owner_phone').value = response.data.phone
+                document.getElementById('id_owner_address').value = response.data.address
+
+                if (response.data.find == 'no') {
+                    alert('ไม่มีข้อมูลในระบบ')
+                }
+            })
+    }
+
+    function getCar() {
+        axios.post('/contract/getcar/', {
+                car_license: document.getElementById('id_car_license').value,
+                car_province: document.getElementById('id_car_province').value,
+                car_type: document.getElementById('id_car_type').value
+            })
+            .then(function(response) {
+                document.getElementById('id_car_register').value = response.data.regist
+                document.getElementById('id_car_brand').value = response.data.brand
+                document.getElementById('id_car_model').value = response.data.model
+                document.getElementById('id_car_chassis').value = response.data.chassis
+                document.getElementById('id_car_displacement').value = response.data.displacement
+                document.getElementById('id_car_gvw').value = response.data.gvw
+                document.getElementById('id_car_seat').value = response.data.seat
+
+                if (response.data.find == 'no') {
+                    alert('ไม่มีข้อมูลในระบบ')
+                }
+            })
+    }
+
+    function getCus() {
+        axios.post('/contract/getcus/', {
+                cus_fname: document.getElementById('id_cus_fname').value,
+                cus_lname: document.getElementById('id_cus_lname').value
+            })
+            .then(function(response) {
+                document.getElementById('id_cus_cardid').value = response.data.cardid
+                document.getElementById('id_cus_phone').value = response.data.phone
+                document.getElementById('id_cus_address').value = response.data.address
+
+                if (response.data.find == 'no') {
+                    alert('ไม่มีข้อมูลในระบบ')
+                }
+            })
+    }
+</script>
 {% endblock %}
