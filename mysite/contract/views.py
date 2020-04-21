@@ -17,10 +17,6 @@ from .forms import CustomerForm
 
 
 # Create your views here.
-@login_required
-# หน้ารายงานกรมธรรม์หมดอายุ
-def report_expire(request):
-    return render(request, template_name='report_ex.html')
 
 @login_required
 # หน้าเพิ่มผู้ติดต่อ
