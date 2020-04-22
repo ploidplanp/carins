@@ -21,7 +21,7 @@ from home.models import (Brand, Car_Use_Type_Table, Company, Person,
 
 @login_required
 # หน้ารายงานกรมธรรม์หมดอายุ
-def report_expire(request):
+def ins_expire(request):
 
     userid = request.user.id
     me = Person.objects.get(user_id=userid) #ตัวเรา=userที่ login
@@ -43,4 +43,7 @@ def report_expire(request):
     context = {
         'cusbuyinsurance': cusbuyinsurance,
     }
-    return render(request, 'report_ex.html', context=context)
+    return render(request, 'ins_ex.html', context=context)
+
+def comp_expire(request):
+    return render(request, 'comp_ex.html')
