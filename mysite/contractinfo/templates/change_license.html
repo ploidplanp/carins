@@ -1,0 +1,107 @@
+{% extends "base.html" %} {% block content %}
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<style>
+    .bdl {
+        border-left: 10px solid #84a9ac;
+        padding-left: 3%;
+    }
+    
+    .mysearch {
+        padding: 2% 0;
+        border: 1px solid #dbdbdb;
+        border-radius: 5px;
+    }
+    
+    .mycolor1 {
+        background-color: #fdd998;
+    }
+    
+    .mycolor2 {
+        background-color: #ffb385;
+    }
+    
+    .mycontainer {
+        width: 90%;
+        border: 1px solid #fdd998;
+    }
+    
+    #mynewlicense {
+        visibility: hidden;
+    }
+</style>
+
+<div class="container">
+    <h1 class="bdl">เปลี่ยนเลขทะเบียนรถ</h1>
+    <div class="jumbotron mt-5">
+        <form action="{% url 'new_policy' %}" method='POST'>
+            {% csrf_token %}
+            <div class="row">
+                <div class="form-group col-6">
+                    <label for="">เลขที่กรมธรรม์</label>
+                    <input class="form-control" id="contract_id">
+                </div>
+                <div class="form-group col-3">
+                    <label for="">ประเภทกรมธรรม์</label>
+                    <select class="form-control" id="contract_type">
+                        <option value="comp">พ.ร.บ.</option>
+                        <option value="ins">ประกัน</option>
+                    </select>
+                </div>
+                <div class="form-group col-3">
+                    <button type="button" class="btn btn-info mt-4" onclick="getContract()">ค้นหา</button>
+                </div>
+            </div>
+            <hr class="mt-4 mb-4">
+            <div class="row" id="mynewlicense">
+                <div class="form-group col-6">
+                    <label for="">เลขทะเบียนรถเดิม</label>
+                    <input class="form-control" id="old_license" readonly>
+                </div>
+                <div class="form-group col-6">
+                    <label for="">จังหวัดรถเดิม</label>
+                    <select class="form-control" id="old_province" disabled>
+                    <option>------</option>
+                    {% for province in provincelist %}
+                        <option value="{{province.id}}">{{province.name}}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-6">
+                    <label for="">เลขทะเบียนใหม่</label>
+                    <input class="form-control" id="">
+                </div>
+                <div class="form-group col-6">
+                    <label for="">จังหวัดรถใหม่</label>
+                    <select class="form-control" id="">
+                    {% for province in provincelist %}
+                        <option value="{{province.id}}">{{province.name}}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-3">
+                    <input class="btn btn-danger mt-4" type="submit" value="ยืนยัน">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function getContract() {
+        axios.post('/contractinfo/getcontract/', {
+                mycontract: document.getElementById('contract_id').value,
+                mytype: document.getElementById('contract_type').value
+            })
+            .then(function(response) {
+                document.getElementById('old_license').value = response.data.car_license
+                document.getElementById('old_province').value = response.data.car_province
+                document.getElementById('mynewlicense').style.visibility = "visible"
+                if (response.data.find == 'no') {
+                    document.getElementById('mynewlicense').style.visibility = "hidden"
+                    alert('ไม่มีข้อมูลในระบบ')
+                }
+            })
+    }
+</script>
+
+{% endblock %}
