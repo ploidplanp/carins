@@ -1,3 +1,5 @@
+import json
+
 from django.shortcuts import render
 from datetime import date, timedelta
 
@@ -20,6 +22,7 @@ from home.models import (Brand, Car_Use_Type_Table, Company, Person,
 # หน้ารายการกรมธรรม์ประกัน
 @login_required
 def ins_search(request):
+    print('yes')
     msg = ''
     searchcontractid = request.POST.get('contractid', '')
     searchlicense = request.POST.get('license', '')
@@ -34,7 +37,7 @@ def ins_search(request):
         takecarelistid.append(i.id)
     # takecarelistid คือ ไอดีลูกค้าที่ user ดูแล
 
-    #กรมธรรม์ทั้งหมดของลูกค้าที่ user ดูแล และเพิ่ม3 วันล่าสุด
+    #กรมธรรม์ทั้งหมดของลูกค้าที่ user ดูแล และเพิ่ม7 วันล่าสุด
     cusbuycontract = Contract.objects.filter(customer_id__in=takecarelistid, register_date__gte=date.today() - timedelta(days=7))
     cusbuycontractlistid = [] 
     for i in cusbuycontract:
@@ -44,6 +47,11 @@ def ins_search(request):
     cusbuyinsurance = Insurance_Policy.objects.filter(contract_id__in=cusbuycontractlistid, contract__status='Available').order_by('-id')
 
     if request.method == 'POST':
+        cusbuycontract = Contract.objects.filter(customer_id__in=takecarelistid)
+        cusbuycontractlistid = [] 
+        for i in cusbuycontract:
+            cusbuycontractlistid.append(i) #ไอดีกรมธรรม์ทั้งหมดของลูกค้าที่ user ดูแล
+
         if 'search1' in request.POST and searchcontractid != '':
             cusbuyinsurance = Insurance_Policy.objects.filter(contract_id__in=cusbuycontractlistid, contract__status='Available', insurance_id=searchcontractid)
             msg = 'ค้นหากรมธรรม์เลขที่ %s' %(searchcontractid)
@@ -51,6 +59,7 @@ def ins_search(request):
         elif 'search2' in request.POST and searchoname != '' and searchosur != '' and searchlicense != '':
             cusbuyinsurance = Insurance_Policy.objects.filter(contract_id__in=cusbuycontractlistid, contract__status='Available', contract__car__license_on=searchlicense, contract__car__owner__fname=searchoname, contract__car__owner__lname=searchosur)
             msg = 'ค้นหากรมธรรม์ทะเบียนรถ %s ผู้เอาประกัน %s %s' %(searchlicense, searchoname, searchosur)
+            print(cusbuyinsurance)
 
     context = {
         'cusbuyinsurance': cusbuyinsurance,
@@ -75,16 +84,20 @@ def comp_search(request):
         takecarelistid.append(i.id)
     # takecarelistid คือ ไอดีลูกค้าที่ user ดูแล
 
-    #กรมธรรม์ทั้งหมดของลูกค้าที่ user ดูแล และเพิ่ม3 วันล่าสุด
+    #กรมธรรม์ทั้งหมดของลูกค้าที่ user ดูแล และเพิ่ม7 วันล่าสุด
     cusbuycontract = Contract.objects.filter(customer_id__in=takecarelistid, register_date__gte=date.today() - timedelta(days=7))
     cusbuycontractlistid = [] 
     for i in cusbuycontract:
         cusbuycontractlistid.append(i) #ไอดีกรมธรรม์ทั้งหมดที่ลูกค้าที่ user ดูแล
 
     # print('ลูกค้าที่ซื้อพรบ')
-    cusbuycoumpulsory = Compulsory_Insurance.objects.filter(contract_id__in=cusbuycontractlistid, contract__status='Available')
+    cusbuycoumpulsory = Compulsory_Insurance.objects.filter(contract_id__in=cusbuycontractlistid, contract__status='Available').order_by('-id')
     
     if request.method == 'POST':
+        cusbuycontract = Contract.objects.filter(customer_id__in=takecarelistid)
+        cusbuycontractlistid = [] 
+        for i in cusbuycontract:
+            cusbuycontractlistid.append(i) #ไอดีกรมธรรม์ทั้งหมดที่ลูกค้าที่ user ดูแล
         if 'search1' in request.POST and searchcontractid != '':
             cusbuycoumpulsory = Compulsory_Insurance.objects.filter(contract_id__in=cusbuycontractlistid, compulsory_id=searchcontractid)
             msg = 'ค้นหากรมธรรม์เลขที่ %s' %(searchcontractid)
@@ -99,3 +112,45 @@ def comp_search(request):
     return render(request, 'search_compulsory.html', context=context)
 
 
+# หน้าเปลี่ยนเลขทะเบียนรถจากกรมธรรม์
+def change_license(request):
+    provincelist = Province.objects.all()
+
+    context = {
+        'provincelist': provincelist
+    }
+    return render(request, 'change_license.html', context=context)
+
+
+@csrf_exempt
+def getcontract(request):
+    data = json.loads(request.body)
+    contractno = data['mycontract']
+    contracttype = data['mytype']
+    find = 'no'
+    if contracttype == 'comp':
+        try:
+            comp = Compulsory_Insurance.objects.get(compulsory_id=contractno)
+            car_license = comp.contract.car.license_on
+            car_province = comp.contract.car.province_id
+            find = 'yes'
+        except Compulsory_Insurance.DoesNotExist:
+            car_license = ''
+            car_province = ''
+    elif contracttype == 'ins':
+        try:
+            ins = Insurance_Policy.objects.get(insurance_id=contractno)
+            car_license = ins.contract.car.license_on
+            car_province = ins.contract.car.province_id
+            find = 'yes'
+        except Insurance_Policy.DoesNotExist:
+            car_license = ''
+            car_province = ''
+
+    response = {
+        'find': find,
+        'car_license': car_license,
+        'car_province': car_province
+    }
+    
+    return JsonResponse(response, status=200)

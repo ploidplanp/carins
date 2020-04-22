@@ -22,7 +22,7 @@
 <div class="container">
 
     <h1 class="bdl">เพิ่มกรมธรรม์ประกันภัย</h1>
-    <form action="{% url 'new_policy' %}" method='POST' class="mt-5 mb-5">
+    <form action="{% url 'change_license' %}" method='POST' class="mt-5 mb-5">
         {% csrf_token %} {{form.errors}}
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
