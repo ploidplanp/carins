@@ -14,7 +14,7 @@ from contract.models import (Car, Compulsory_Insurance, Contract, Customer,
 from home.models import (Brand, Car_Use_Type_Table, Company, Person,
                          Premium_Table, Province)
 
-from .forms import Insurance_PolicyFrom
+from .forms import ContractForm
 
 
 # Create your views here.
@@ -28,7 +28,7 @@ def new_policy(request):
     companylist = Company.objects.all()
     caruselist = Car_Use_Type_Table.objects.all().order_by('code')
     if request.method == 'POST':
-        form = Insurance_PolicyFrom(request.POST)
+        form = ContractForm(request.POST)
         if form.is_valid():
             print(form.cleaned_data) # ทั้งก้อน
             print('-----------')
@@ -121,12 +121,12 @@ def new_policy(request):
             newins = Insurance_Policy.objects.create(
                 insurance_id = form.cleaned_data['contract_insid'],
                 insurance_car_use_type_id = request.POST.get('caruseSelect'),
-                insurance_code = form.cleaned_data['contract_code'],
+                insurance_code = request.POST.get('contractcodeSelect'),
                 contract_id = lastcontract.id
             )
             return redirect('ins_search')
     else:
-        form = Insurance_PolicyFrom()
+        form = ContractForm()
 
     context = {
         'form': form,
