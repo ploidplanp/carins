@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'home',
-    'contract'
+    'contract',
+    'infocustomer',
 ]
 
 MIDDLEWARE = [
@@ -76,7 +77,7 @@ STATICFILES_DIRS = [
 ]
 
 # Database
-# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
+# # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
                 'default': {
@@ -85,7 +86,7 @@ DATABASES = {
                     'USER': 'postgres',
                     'PASSWORD': 'waoe389',
                     'HOST': 'localhost',
-                    'PORT': '',
+                    'PORT': '5433',
                 }
             }
 
