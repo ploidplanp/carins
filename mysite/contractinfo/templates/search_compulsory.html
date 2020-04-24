@@ -85,17 +85,17 @@
     <div class="container mycontainer mt-5">
         <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
             <li class="nav-item">
-                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">ข้อมูลพื้นฐาน</a>
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home{{c.id}}" role="tab" aria-controls="home" aria-selected="true">ข้อมูลพื้นฐาน</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">ข้อมูลรถ</a>
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile{{c.id}}" role="tab" aria-controls="profile" aria-selected="false">ข้อมูลรถ</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="profile-tab" data-toggle="tab" href="#" role="tab" aria-controls="profile" aria-selected="false">แก้ไข</a>
             </li>
         </ul>
         <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"><br>
+            <div class="tab-pane fade show active" id="home{{c.id}}" role="tabpanel" aria-labelledby="home-tab"><br>
                 <p><b>เลขที่กรมธรรม์พ.ร.บ. {{c.compulsory_id}}</b> <span><small class="card-text text-secondary">(สถานะ: {{c.contract.status}})</small></span></p>
                 <div class="row">
                     <div class="col-6">
@@ -111,7 +111,7 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab"><br>
+            <div class="tab-pane fade" id="profile{{c.id}}" role="tabpanel" aria-labelledby="profile-tab"><br>
                 <div class="row">
                     <div class="col-6">
                         <p>ยี่ห้อ: {{c.contract.car.brand}}</p>
