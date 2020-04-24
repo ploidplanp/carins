@@ -37,7 +37,7 @@ class ContractForm(forms.Form):
     car_seat = forms.IntegerField(label='จำนวนที่นั่ง')
     
     # ข้อมูลประกัน
-    contract_insid = forms.CharField(label='เลขที่กรมธรรม์ประกัน', max_length=50, widget=forms.TextInput(attrs={'class':'form-control'}))
+    contract_no = forms.CharField(label='เลขที่กรมธรรม์ประกัน', max_length=50, widget=forms.TextInput(attrs={'class':'form-control'}))
     contract_cover_start = forms.DateField(label='วันเริ่มคุ้มครอง', input_formats=['%Y-%m-%d'])
     contract_cover_end = forms.DateField(label='วันสิ้นสุดคุ้มครอง', input_formats=['%Y-%m-%d'])
     contract_price = forms.FloatField(label='ราคา')

@@ -21,7 +21,7 @@ class Car_Use_Type_Table(models.Model):
 
 class Premium_Table(models.Model):
     code = models.CharField(max_length=5)
-    make_model = models.CharField(max_length=25)
+    make_model = models.CharField(max_length=255)
     info = models.TextField(null=True, blank=True)
     premium = models.FloatField(default=0.00)
     revenue_stamp = models.FloatField(default=0.00)
