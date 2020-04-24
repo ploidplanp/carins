@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'home',
     'contract',
     'infocustomer',
+    'report',
+    'contractinfo'
 ]
 
 MIDDLEWARE = [

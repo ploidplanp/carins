@@ -1,0 +1,23 @@
+{% extends "base.html" %} {% block content %}
+<style>
+    .bdl {
+        border-left: 10px solid #84a9ac;
+        padding-left: 3%;
+    }
+    
+    .mycontract {
+        width: 90%;
+    }
+</style>
+
+<div class="container">
+    <h1 class="bdl">เพิ่มเจ้าของรถ</h1>
+    <form action="{% url '' %}" method='POST' class="mt-5">
+        {% csrf_token %}
+        <table>
+            {{ form }}
+        </table>
+        <button type="submit" class="btn btn-outline-success mb-5">ยืนยัน</button>
+    </form>
+</div>
+{% endblock %}
