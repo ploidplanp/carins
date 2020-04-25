@@ -19,6 +19,7 @@
                 <div class="col-xl-5">
                     <div class="section_tittle text-center">
                         <p>User infomation</p>
+                        <a href="/admin/auth/user/add/" class="btn btn-info red" role="button">Add User</a> 
                         <h2>User Blog</h2>
                     </div>
                 </div>
@@ -54,8 +55,9 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xl-5">
-                    <div class="section_tittle text-center">
-                    
+                    <div class="section_tittle text-center">   
+                        <p>Company Information</p>   
+                        <a href="admin/home/company/add/" class="btn btn-info red" role="button">Add Company</a>          
                         <h2>Company</h2>
                     </div>
                 </div>
@@ -67,7 +69,7 @@
                         <div class="card">
                             <img src="{{com.picture}}" class="card-img-top" alt="blog">
                             <div class="card-body">
-                                
+                                <a href="" class="btn_4">{{ com.name}}</a>
                                 <p>tax no. :{{com.tax_no}}</p>
                                 <p>phone :{{com.phone}}</p>
                                 <p>Address :{{com.address}}</p>
@@ -84,9 +86,6 @@
         
     </section>
 
-
-{% comment %} ส่วนของ Company {% endcomment %}
-    
     
 </body>
 </html>

@@ -19,10 +19,12 @@
                 <div class="col-xl-5">
                     <div class="section_tittle text-center">
                         <p>Customers infomation</p>
+                        <a href="/admin/infocustomer/customer/add/" class="btn btn-info red" role="button">Add Customer</a> 
                         <h2>Customers Blog</h2>
                     </div>
                 </div>
             </div>
+            
             <div class="row">
             {% for cus in customer_name %}
                 <div class="col-sm-6 col-lg-4 col-xl-4">
@@ -38,7 +40,7 @@
                                 <p>card id :{{cus.card_id}}</p>
                                 <p>phone :{{cus.phone}}</p>
                                 <p>Address :{{cus.address}}</p>
-                                <a href="/edit/{{cus.id }}" class="btn btn-info red" role="button">Edit</a>                                
+                                <a href="/edit_cus/{{cus.id }}" class="btn btn-info red" role="button">Edit</a>                                
                                 <a href="/delete/{{cus.id }}" class="btn btn-info red" role="button">Delete</a> 
                                 
                             </div>

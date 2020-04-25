@@ -23,8 +23,3 @@ class Customer(models.Model):
     seller_id = models.ForeignKey(Seller, on_delete=models.CASCADE)
     picture = models.CharField(max_length=255, default= 'https://i.stack.imgur.com/l60Hf.png')
 
-class Company(models.Model):
-    tax_no = models.CharField(max_length=13)
-    address = models.CharField(max_length=255)
-    phone = models.CharField(max_length=10)
-    picture = models.CharField(max_length=255, default= 'https://i.stack.imgur.com/l60Hf.png')
