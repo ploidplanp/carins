@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'home',
     'contract',
+    'infocustomer',
     'report',
     'contractinfo'
 ]
@@ -78,7 +79,7 @@ STATICFILES_DIRS = [
 ]
 
 # Database
-# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
+# # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
                 'default': {

@@ -34,14 +34,14 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         {% if user.is_superuser %}
-                        <a class="dropdown-item" href="#">ผู้ใช้งาน</a>
+                        <a class="dropdown-item" href="/user/">ผู้ใช้งาน</a>
                         {% endif %}
                         <a class="dropdown-item" href="{% url 'company_detail' %}">บริษัท</a>
                         <a class="dropdown-item" href="{% url 'premium_detail' %}">ตารางอัตราเบี้ยพ.ร.บ.</a>
                         <a class="dropdown-item" href="{% url 'cartype_detail' %}">ตารางรหัสการใช้รถ</a>
                         {% if user.is_superuser == 0 %}
                         {% comment %} เมนูสำหรับคนที่เป็น user ธรรมดา {% endcomment %}
-                            <a class="dropdown-item" href="#">ลูกค้า</a>
+                            <a class="dropdown-item" href="/customer/{{user.id}}">ลูกค้า</a>
                         {% endif %}
                     </div>
                 </li>

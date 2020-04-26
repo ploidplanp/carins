@@ -16,14 +16,20 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-from home import views
+from home import views as home_views
+from infocustomer import views as customer_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.mylogin, name='mylogin'),
-    path('logout', views.mylogout, name='mylogout'),
+    path('', home_views.mylogin, name='mylogin'),
+    path('logout', home_views.mylogout, name='mylogout'),
     path('home/', include('home.urls')),
     path('contract/', include('contract.urls')),
+    path('customer/<seller_id>', customer_views.homepage, name='cusindex'),
+    path('edit_cus/<customer_id>/', customer_views.edit_cus_page),
+    path('customers/', customer_views.edit_profile ,name='edit_page'),
+    path('delete/<customer_id>/', customer_views.delete_profile ,name='delete_customer'),
+    path('user/', customer_views.Company_homepage, name='userindex'),
     path('report/', include('report.urls')),
     path('contractinfo/', include('contractinfo.urls'))
 ]
