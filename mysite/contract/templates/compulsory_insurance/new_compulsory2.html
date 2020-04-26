@@ -15,7 +15,7 @@
     <div class="container mycontract">
         <form action="{% url 'new_compulsory' %}" method='POST' class="mt-5">
         
-            {% csrf_token %}
+            {% csrf_token %}{{form.errors}}
             <h4>ข้อมูลพื้นฐาน</h4><br>
             <div class="form-row mt-4">
                 <div class="form-group col-md-6">

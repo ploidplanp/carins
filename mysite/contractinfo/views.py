@@ -15,14 +15,22 @@ from contract.models import (Car, Compulsory_Insurance, Contract, Customer,
                              Insurance_Policy, Owner)
 from home.models import (Brand, Car_Use_Type_Table, Company, Person,
                          Premium_Table, Province)
-
+from contract.forms import ContractForm
 # Create your views here.
 
+# หน้าเปลี่ยนเลขทะเบียนรถจากกรมธรรม์
+@login_required
+def change_license(request):
+    provincelist = Province.objects.all()
+
+    context = {
+        'provincelist': provincelist
+    }
+    return render(request, 'change_license.html', context=context)
 
 # หน้ารายการกรมธรรม์ประกัน
 @login_required
 def ins_search(request):
-    print('yes')
     msg = ''
     searchcontractid = request.POST.get('contractid', '')
     searchlicense = request.POST.get('license', '')
@@ -111,17 +119,117 @@ def comp_search(request):
     }
     return render(request, 'search_compulsory.html', context=context)
 
+@login_required
+def ins_edit(request, ins_id):
+    userid = request.user.id
+    me = Person.objects.get(user_id=userid) #ตัวเรา=userที่ login
+    companylist = Company.objects.all()
+    caruselist = Car_Use_Type_Table.objects.all().order_by('code')
 
-# หน้าเปลี่ยนเลขทะเบียนรถจากกรมธรรม์
-def change_license(request):
-    provincelist = Province.objects.all()
+    try:
+        myins = Insurance_Policy.objects.get(id=ins_id)
+    except Insurance_Policy.DoesNotExist:
+        return redirect('ins_search')
+
+    if request.method == 'POST':
+        form = ContractForm(request.POST)
+        if form.is_valid():
+            print(form.cleaned_data) # ทั้งก้อน
+            
+            try:
+                owner = Owner.objects.get(card_id=form.cleaned_data['owner_cardid'])
+                owner.card_id = form.cleaned_data['owner_cardid']
+                owner.fname = form.cleaned_data['owner_fname']
+                owner.lname = form.cleaned_data['owner_lname']
+                owner.phone = form.cleaned_data['owner_phone']
+                owner.address = form.cleaned_data['owner_address']
+                owner.save()
+            except Owner.DoesNotExist:
+                owner = Owner.objects.create(
+                    card_id = form.cleaned_data['owner_cardid'],
+                    fname= form.cleaned_data['owner_fname'],
+                    lname = form.cleaned_data['owner_lname'],
+                    phone = form.cleaned_data['owner_phone'],
+                    address = form.cleaned_data['owner_address'],
+                )
+
+            car = Car.objects.get(license_on=form.cleaned_data['car_license'], province=form.cleaned_data['car_province'], type=form.cleaned_data['car_type'])
+            car.license_on = form.cleaned_data['car_license']
+            car.date_register = form.cleaned_data['car_register']
+            car.province_id = form.cleaned_data['car_province']
+            car.brand_id = form.cleaned_data['car_brand']
+            car.model = form.cleaned_data['car_model']
+            car.chassis_on = form.cleaned_data['car_chassis']
+            car.displacement = form.cleaned_data['car_displacement']
+            car.gvw = form.cleaned_data['car_gvw']
+            car.seat = form.cleaned_data['car_seat']
+            car.type = form.cleaned_data['car_type']
+            car.owner_id = owner.id
+            car.save()
+
+            try:
+                cus = Customer.objects.get(fname=form.cleaned_data['cus_fname'], lname=form.cleaned_data['cus_lname'])
+                cus.card_id = form.cleaned_data['cus_cardid']
+                cus.fname = form.cleaned_data['cus_fname']
+                cus.lname = form.cleaned_data['cus_lname']
+                cus.phone = form.cleaned_data['cus_phone']
+                cus.address = form.cleaned_data['cus_address']
+                cus.seller_id = me.id
+                cus.save()
+            except Customer.DoesNotExist:
+                cus = Customer.objects.create(
+                    card_id = form.cleaned_data['cus_cardid'],
+                    fname = form.cleaned_data['cus_fname'],
+                    lname = form.cleaned_data['cus_lname'],
+                    phone = form.cleaned_data['cus_phone'],
+                    address = form.cleaned_data['cus_address'],
+                    seller_id = me.id
+                )
+
+            if form.cleaned_data['contract_cover_end'] >= date.today():
+                contract_status = 'Available'
+            else:
+                contract_status = 'Unavailable'
+
+            myins.insurance_id = form.cleaned_data['contract_no']
+            myins.insurance_code = request.POST.get('contractcodeSelect')
+            myins.insurance_car_use_type_id = request.POST.get('caruseSelect')
+            myins.save()
+
+            mycon = Contract.objects.get(id=myins.contract_id)
+            mycon.register_date = date.today()
+            mycon.status = contract_status
+            mycon.date_start_cover = form.cleaned_data['contract_cover_start']
+            mycon.date_end_cover = form.cleaned_data['contract_cover_end']
+            mycon.price = form.cleaned_data['contract_price']
+            mycon.customer_id = cus.id
+            mycon.company_id = request.POST.get('companySelect')
+            mycon.save()
+
+            return redirect('ins_search')
+    else:
+        form = ContractForm()
 
     context = {
-        'provincelist': provincelist
+        'form': form,
+        'companylist': companylist,
+        'caruselist': caruselist,
+        'insid': ins_id,
+        'myins': Insurance_Policy.objects.get(id=ins_id)
     }
-    return render(request, 'change_license.html', context=context)
+    return render(request, 'edit_insurance.html', context=context)
 
 
+@login_required
+def ins_delete(request, ins_id):
+    myins = Insurance_Policy.objects.get(id=ins_id)
+    mycon = Contract.objects.get(id=myins.contract_id)
+    myins.delete()
+    mycon.delete()
+    return redirect('ins_search')
+
+
+#ใช้สำหรับหน้าเปลี่ยนเลขทะเบียนรถ
 @csrf_exempt
 def getcontract(request):
     data = json.loads(request.body)
@@ -153,4 +261,41 @@ def getcontract(request):
         'car_province': car_province
     }
     
+    return JsonResponse(response, status=200)
+
+@csrf_exempt
+def getins(request):
+    data = json.loads(request.body)
+    insid = data['insid']
+    myins = Insurance_Policy.objects.get(id=insid)
+    own = myins.contract.car.owner
+    car = myins.contract.car
+    cus = myins.contract.customer
+    
+    response = {
+        'insurance_id': myins.insurance_id,
+        'own_cardid': own.card_id,
+        'own_fname': own.fname,
+        'own_lname': own.lname,
+        'own_phone': own.phone,
+        'own_address': own.address,
+        'car_license': car.license_on,
+        'car_regist': car.date_register,
+        'car_brand': car.brand.id,
+        'car_model': car.model,
+        'car_chassis': car.chassis_on,
+        'car_displacement': car.displacement,
+        'car_gvw': car.gvw,
+        'car_seat': car.seat,
+        'contract_code': myins.insurance_code,
+        'contract_sdate': myins.contract.date_start_cover,
+        'contract_edate': myins.contract.date_end_cover,
+        'contract_price': myins.contract.price,
+        'cus_fname': cus.fname,
+        'cus_lname': cus.lname,
+        'cus_phone': cus.phone,
+        'cus_address': cus.address,
+        'cus_cardid': cus.card_id
+    }
+
     return JsonResponse(response, status=200)
