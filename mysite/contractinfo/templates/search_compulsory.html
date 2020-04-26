@@ -95,7 +95,7 @@
                 <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile{{c.id}}" role="tab" aria-controls="profile" aria-selected="false">ข้อมูลรถ</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#" role="tab" aria-controls="profile" aria-selected="false">แก้ไข</a>
+                <a class="nav-link" href="{% url 'comp_edit' comp_id=c.id %}">แก้ไข</a>
             </li>
         </ul>
         <div class="tab-content" id="myTabContent">

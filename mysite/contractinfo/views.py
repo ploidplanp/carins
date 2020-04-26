@@ -219,6 +219,107 @@ def ins_edit(request, ins_id):
     }
     return render(request, 'edit_insurance.html', context=context)
 
+@login_required
+def comp_edit(request, comp_id):
+    print(comp_id)
+    userid = request.user.id
+    me = Person.objects.get(user_id=userid) #ตัวเรา=userที่ login
+    companylist = Company.objects.all()
+    carpremium = Premium_Table.objects.all().order_by('code')
+
+    try:
+        mycomp = Compulsory_Insurance.objects.get(id=comp_id)
+    except Compulsory_Insurance.DoesNotExist:
+        return redirect('comp_search')
+
+    if request.method == 'POST':
+        form = ContractForm(request.POST)
+        if form.is_valid():
+            print(form.cleaned_data) # ทั้งก้อน
+
+            try:
+                owner = Owner.objects.get(card_id=form.cleaned_data['owner_cardid'])
+                owner.card_id = form.cleaned_data['owner_cardid']
+                owner.fname = form.cleaned_data['owner_fname']
+                owner.lname = form.cleaned_data['owner_lname']
+                owner.phone = form.cleaned_data['owner_phone']
+                owner.address = form.cleaned_data['owner_address']
+                owner.save()
+            except Owner.DoesNotExist:
+                owner = Owner.objects.create(
+                    card_id = form.cleaned_data['owner_cardid'],
+                    fname= form.cleaned_data['owner_fname'],
+                    lname = form.cleaned_data['owner_lname'],
+                    phone = form.cleaned_data['owner_phone'],
+                    address = form.cleaned_data['owner_address'],
+                )
+
+            car = Car.objects.get(license_on=form.cleaned_data['car_license'], province=form.cleaned_data['car_province'], type=form.cleaned_data['car_type'])
+            car.license_on = form.cleaned_data['car_license']
+            car.date_register = form.cleaned_data['car_register']
+            car.province_id = form.cleaned_data['car_province']
+            car.brand_id = form.cleaned_data['car_brand']
+            car.model = form.cleaned_data['car_model']
+            car.chassis_on = form.cleaned_data['car_chassis']
+            car.displacement = form.cleaned_data['car_displacement']
+            car.gvw = form.cleaned_data['car_gvw']
+            car.seat = form.cleaned_data['car_seat']
+            car.type = form.cleaned_data['car_type']
+            car.owner_id = owner.id
+            car.save()
+
+            try:
+                cus = Customer.objects.get(fname=form.cleaned_data['cus_fname'], lname=form.cleaned_data['cus_lname'])
+                cus.card_id = form.cleaned_data['cus_cardid']
+                cus.fname = form.cleaned_data['cus_fname']
+                cus.lname = form.cleaned_data['cus_lname']
+                cus.phone = form.cleaned_data['cus_phone']
+                cus.address = form.cleaned_data['cus_address']
+                cus.seller_id = me.id
+                cus.save()
+            except Customer.DoesNotExist:
+                cus = Customer.objects.create(
+                    card_id = form.cleaned_data['cus_cardid'],
+                    fname = form.cleaned_data['cus_fname'],
+                    lname = form.cleaned_data['cus_lname'],
+                    phone = form.cleaned_data['cus_phone'],
+                    address = form.cleaned_data['cus_address'],
+                    seller_id = me.id
+                )
+
+            if form.cleaned_data['contract_cover_end'] >= date.today():
+                contract_status = 'Available'
+            else:
+                contract_status = 'Unavailable'
+
+            mycomp.compulsory_id = form.cleaned_data['contract_no']
+            mycomp.compulsory_car_use_type_id = request.POST.get('caruseSelect')
+            mycomp.save()
+
+            mycon = Contract.objects.get(id=mycomp.contract_id)
+            mycon.register_date = date.today()
+            mycon.status = contract_status
+            mycon.date_start_cover = form.cleaned_data['contract_cover_start']
+            mycon.date_end_cover = form.cleaned_data['contract_cover_end']
+            mycon.price = form.cleaned_data['contract_price']
+            mycon.customer_id = cus.id
+            mycon.company_id = request.POST.get('companySelect')
+            mycon.save()
+
+            
+
+            return redirect('comp_search')
+    else:
+        form = ContractForm()
+
+    context = {
+        'form': form,
+        'companylist': companylist,
+        'carpremium': carpremium,
+        'compid': comp_id,
+        'mycomp': Compulsory_Insurance.objects.get(id=comp_id)
+    }
+    return render(request, 'edit_compulsory.html', context=context)
 
 @login_required
 def ins_delete(request, ins_id):
@@ -228,6 +329,13 @@ def ins_delete(request, ins_id):
     mycon.delete()
     return redirect('ins_search')
 
+@login_required
+def comp_delete(request, comp_id):
+    mycomp = Compulsory_Insurance.objects.get(id=comp_id)
+    mycon = Contract.objects.get(id=mycomp.contract_id)
+    mycomp.delete()
+    mycon.delete()
+    return redirect('comp_search')
 
 #ใช้สำหรับหน้าเปลี่ยนเลขทะเบียนรถ
 @csrf_exempt
@@ -291,6 +399,42 @@ def getins(request):
         'contract_sdate': myins.contract.date_start_cover,
         'contract_edate': myins.contract.date_end_cover,
         'contract_price': myins.contract.price,
+        'cus_fname': cus.fname,
+        'cus_lname': cus.lname,
+        'cus_phone': cus.phone,
+        'cus_address': cus.address,
+        'cus_cardid': cus.card_id
+    }
+
+    return JsonResponse(response, status=200)
+
+@csrf_exempt
+def getcomp(request):
+    data = json.loads(request.body)
+    compid = data['compid']
+    mycomp = Compulsory_Insurance.objects.get(id=compid)
+    own = mycomp.contract.car.owner
+    car = mycomp.contract.car
+    cus = mycomp.contract.customer
+
+    response = {
+        'compulsory_id': mycomp.compulsory_id,
+        'own_cardid': own.card_id,
+        'own_fname': own.fname,
+        'own_lname': own.lname,
+        'own_phone': own.phone,
+        'own_address': own.address,
+        'car_license': car.license_on,
+        'car_regist': car.date_register,
+        'car_brand': car.brand.id,
+        'car_model': car.model,
+        'car_chassis': car.chassis_on,
+        'car_displacement': car.displacement,
+        'car_gvw': car.gvw,
+        'car_seat': car.seat,
+        'contract_sdate': mycomp.contract.date_start_cover,
+        'contract_edate': mycomp.contract.date_end_cover,
+        'contract_price': mycomp.contract.price,
         'cus_fname': cus.fname,
         'cus_lname': cus.lname,
         'cus_phone': cus.phone,

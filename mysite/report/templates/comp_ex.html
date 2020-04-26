@@ -32,45 +32,45 @@
 
         <div class="col-lg-4">
             <div class="row">
-            <form method="POST" action="{% url 'comp_expire_report' check='day' %}">
-            {% csrf_token %}
-                <div class="col-lg-12">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <input type="date" class="form-control" id="search_day" name="search_day" required>
-                        </div>
-                        <div class="col-lg-6">
-                            <button type="submit" class="mybtn btn btn-outline-primary" style="width: 50%;">Day</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-            <form method="POST" action="{% url 'comp_expire_report' check='week' %}">
-            {% csrf_token %}
-                <div class="col-lg-12 mt-4">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <input type="week" class="form-control" id="search_week" name="search_week" required>
-                        </div>
-                        <div class="col-lg-6">
-                            <button type="submit" class="mybtn btn btn-outline-primary" style="width: 50%;">Week</button>
+                <form method="POST" action="{% url 'comp_expire_report' check='day' %}">
+                    {% csrf_token %}
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <input type="date" class="form-control" id="search_day" name="search_day" required>
+                            </div>
+                            <div class="col-lg-6">
+                                <button type="submit" class="mybtn btn btn-outline-primary" style="width: 50%;">Day</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </form>
-            <form method="POST" action="{% url 'comp_expire_report' check='month' %}">
-            {% csrf_token %}
-                <div class="col-lg-12 mt-4">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <input type="month" class="form-control" id="search_month" name="search_month" required>
-                        </div>
-                        <div class="col-lg-6">
-                            <button type="submit" class="mybtn btn btn-outline-primary" style="width: 50%;">Month</button>
+                </form>
+                <form method="POST" action="{% url 'comp_expire_report' check='week' %}">
+                    {% csrf_token %}
+                    <div class="col-lg-12 mt-4">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <input type="week" class="form-control" id="search_week" name="search_week" required>
+                            </div>
+                            <div class="col-lg-6">
+                                <button type="submit" class="mybtn btn btn-outline-primary" style="width: 50%;">Week</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </form>
+                </form>
+                <form method="POST" action="{% url 'comp_expire_report' check='month' %}">
+                    {% csrf_token %}
+                    <div class="col-lg-12 mt-4">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <input type="month" class="form-control" id="search_month" name="search_month" required>
+                            </div>
+                            <div class="col-lg-6">
+                                <button type="submit" class="mybtn btn btn-outline-primary" style="width: 50%;">Month</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
 
