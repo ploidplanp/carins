@@ -1,10 +1,14 @@
 import json
+import datetime
+import math
 from datetime import date
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models.expressions import OrderBy
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+# -----------------
+from django.http.response import JsonResponse
 from django.shortcuts import redirect, render
 from django.template.context_processors import request
 from django.views.decorators.csrf import csrf_exempt
@@ -14,8 +18,7 @@ from contract.models import (Car, Compulsory_Insurance, Contract, Customer,
 from home.models import (Brand, Car_Use_Type_Table, Company, Person,
                          Premium_Table, Province)
 
-from .forms import Insurance_PolicyFrom
-
+from .forms import ContractForm
 
 # Create your views here.
 
@@ -28,7 +31,7 @@ def new_policy(request):
     companylist = Company.objects.all()
     caruselist = Car_Use_Type_Table.objects.all().order_by('code')
     if request.method == 'POST':
-        form = Insurance_PolicyFrom(request.POST)
+        form = ContractForm(request.POST)
         if form.is_valid():
             print(form.cleaned_data) # ทั้งก้อน
             print('-----------')
@@ -119,14 +122,14 @@ def new_policy(request):
             lastcontract = Contract.objects.latest('id')
 
             newins = Insurance_Policy.objects.create(
-                insurance_id = form.cleaned_data['contract_insid'],
+                insurance_id = form.cleaned_data['contract_no'],
                 insurance_car_use_type_id = request.POST.get('caruseSelect'),
-                insurance_code = form.cleaned_data['contract_code'],
+                insurance_code = request.POST.get('contractcodeSelect'),
                 contract_id = lastcontract.id
             )
             return redirect('ins_search')
     else:
-        form = Insurance_PolicyFrom()
+        form = ContractForm()
 
     context = {
         'form': form,
@@ -139,11 +142,147 @@ def new_policy(request):
 @login_required
 # หน้าเพิ่มกรมธรรม์ พ.ร.บ.
 def new_compulsory(request):
-    return render(request, 'compulsory_insurance/new_compulsory.html')
+    userid = request.user.id
+    me = Person.objects.get(user_id=userid) #ตัวเรา=userที่ login
+    companylist = Company.objects.all()
+    carpremium = Premium_Table.objects.all().order_by('code')
+    if request.method == 'POST':
+        form = ContractForm(request.POST)
+        if form.is_valid():
+            print(form.cleaned_data) # ทั้งก้อน
+            print('-----------')
+
+            try:
+                owner = Owner.objects.get(card_id=form.cleaned_data['owner_cardid'])
+                owner.card_id = form.cleaned_data['owner_cardid']
+                owner.fname = form.cleaned_data['owner_fname']
+                owner.lname = form.cleaned_data['owner_lname']
+                owner.phone = form.cleaned_data['owner_phone']
+                owner.address = form.cleaned_data['owner_address']
+                owner.save()
+            except Owner.DoesNotExist:
+                owner = Owner.objects.create(
+                    card_id = form.cleaned_data['owner_cardid'],
+                    fname= form.cleaned_data['owner_fname'],
+                    lname = form.cleaned_data['owner_lname'],
+                    phone = form.cleaned_data['owner_phone'],
+                    address = form.cleaned_data['owner_address'],
+                )
+            # myowner = Owner.objects.get(card_id=form.cleaned_data['owner_cardid'])
+
+            try:
+                car = Car.objects.get(license_on=form.cleaned_data['car_license'], province=form.cleaned_data['car_province'], type=form.cleaned_data['car_type'])
+                car.license_on = form.cleaned_data['car_license']
+                car.date_register = form.cleaned_data['car_register']
+                car.province_id = form.cleaned_data['car_province']
+                car.brand_id = form.cleaned_data['car_brand']
+                car.model = form.cleaned_data['car_model']
+                car.chassis_on = form.cleaned_data['car_chassis']
+                car.displacement = form.cleaned_data['car_displacement']
+                car.gvw = form.cleaned_data['car_gvw']
+                car.seat = form.cleaned_data['car_seat']
+                car.type = form.cleaned_data['car_type']
+                car.owner_id = owner.id
+                car.save()
+            except Car.DoesNotExist:
+                car = Car.objects.create(
+                    license_on = form.cleaned_data['car_license'],
+                    date_register = form.cleaned_data['car_register'],
+                    province_id = form.cleaned_data['car_province'],
+                    brand_id = form.cleaned_data['car_brand'],
+                    model = form.cleaned_data['car_model'],
+                    chassis_on = form.cleaned_data['car_chassis'],
+                    displacement = form.cleaned_data['car_displacement'],
+                    gvw = form.cleaned_data['car_gvw'],
+                    seat = form.cleaned_data['car_seat'],
+                    type = form.cleaned_data['car_type'],
+                    owner_id = owner.id
+                )
+            # mycar = Car.objects.get(license_on=form.cleaned_data['car_license'], province=form.cleaned_data['car_province'], type=form.cleaned_data['car_type'])
+
+            try:
+                cus = Customer.objects.get(fname=form.cleaned_data['cus_fname'], lname=form.cleaned_data['cus_lname'])
+                cus.card_id = form.cleaned_data['cus_cardid']
+                cus.fname = form.cleaned_data['cus_fname']
+                cus.lname = form.cleaned_data['cus_lname']
+                cus.phone = form.cleaned_data['cus_phone']
+                cus.address = form.cleaned_data['cus_address']
+                cus.seller_id = me.id
+                cus.save()
+            except Customer.DoesNotExist:
+                cus = Customer.objects.create(
+                    card_id = form.cleaned_data['cus_cardid'],
+                    fname = form.cleaned_data['cus_fname'],
+                    lname = form.cleaned_data['cus_lname'],
+                    phone = form.cleaned_data['cus_phone'],
+                    address = form.cleaned_data['cus_address'],
+                    seller_id = me.id
+                )
+            # mycus = Customer.objects.get(fname=form.cleaned_data['cus_fname'], lname=form.cleaned_data['cus_lname'])
+
+            if form.cleaned_data['contract_cover_end'] >= date.today():
+                contract_status = 'Available'
+            else:
+                contract_status = 'Unavailable'
+            
+            contract = Contract.objects.create(
+                register_date = date.today(),
+                status = contract_status,
+                date_start_cover = form.cleaned_data['contract_cover_start'],
+                date_end_cover = form.cleaned_data['contract_cover_end'],
+                price = form.cleaned_data['contract_price'],
+                customer_id = cus.id,
+                company_id = request.POST.get('companySelect'),
+                car_id = car.id
+            )
+            lastcontract = Contract.objects.latest('id')
+
+            newcomp = Compulsory_Insurance.objects.create(
+                compulsory_id = form.cleaned_data['contract_no'],
+                compulsory_car_use_type_id = request.POST.get('caruseSelect'),
+                contract_id = lastcontract.id
+            )
+            return redirect('comp_search')
+    else:
+        form = ContractForm()
+
+    context = {
+        'form': form,
+        'companylist': companylist,
+        'carpremium': carpremium
+    }
+    return render(request, 'compulsory_insurance/new_compulsory.html', context=context)
 
 
 
 # request ข้อมูล ajax
+@csrf_exempt
+def getpremium(request):
+    data = json.loads(request.body)
+    compcode = data['comp_code']
+    sdate = data['comp_sdate']
+    edate = data['comp_edate']
+
+    pm = Premium_Table.objects.get(id=compcode)
+    sdate_time_obj = datetime.datetime.strptime(sdate, '%Y-%m-%d').date()
+    edate_time_obj = datetime.datetime.strptime(edate, '%Y-%m-%d').date()
+    diffday = (edate_time_obj - sdate_time_obj).days
+
+    # คำนวนเบี้ย
+    calday = (pm.premium/365)*diffday
+    calst = math.ceil(calday * (0.4/100)) # อากร
+    calvat = (calday + calst) * 0.07 # vat 7 %
+    price = round(calday + calst + calvat, 2)
+
+    response = {
+        'premium': pm.premium,
+        'stamp': pm.revenue_stamp,
+        'vat': pm.vat,
+        'price': price
+    }
+
+    return JsonResponse(response, status=200)
+
 @csrf_exempt
 def getowner(request):
     data = json.loads(request.body)
@@ -241,5 +380,3 @@ def getcar(request):
     }
     
     return JsonResponse(response, status=200)
-
-# -----------------

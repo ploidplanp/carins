@@ -21,7 +21,7 @@ class Car_Use_Type_Table(models.Model):
 
 class Premium_Table(models.Model):
     code = models.CharField(max_length=5)
-    make_model = models.CharField(max_length=25)
+    make_model = models.CharField(max_length=255)
     info = models.TextField(null=True, blank=True)
     premium = models.FloatField(default=0.00)
     revenue_stamp = models.FloatField(default=0.00)
@@ -36,6 +36,7 @@ class Company(models.Model):
     tax_no = models.CharField(max_length=13)
     address = models.TextField(null=True, blank=True)
     phone = models.CharField(max_length=10)
+    picture = models.CharField(max_length=255, default= 'https://i.stack.imgur.com/l60Hf.png')
 
     def __str__(self):
         return '%s' %self.name

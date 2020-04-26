@@ -16,7 +16,7 @@ inscode_choice = (
 province_choice = tuple(Province.objects.all().values_list())
 brand_choice = tuple(Brand.objects.all().values_list())
 
-class Insurance_PolicyFrom(forms.Form):
+class ContractForm(forms.Form):
     # ข้อมูลเจ้าของรถ
     owner_cardid = forms.CharField(label='เลขบัตรประชาชนเจ้าของรถ', max_length=13, widget=forms.TextInput(attrs={'class':'form-control'}))
     owner_fname = forms.CharField(label='ชื่อเจ้าของรถ', max_length=255, widget=forms.TextInput(attrs={'class':'form-control'}))
@@ -37,10 +37,9 @@ class Insurance_PolicyFrom(forms.Form):
     car_seat = forms.IntegerField(label='จำนวนที่นั่ง')
     
     # ข้อมูลประกัน
-    contract_insid = forms.CharField(label='เลขที่กรมธรรม์ประกัน', max_length=50, widget=forms.TextInput(attrs={'class':'form-control'}))
+    contract_no = forms.CharField(label='เลขที่กรมธรรม์ประกัน', max_length=50, widget=forms.TextInput(attrs={'class':'form-control'}))
     contract_cover_start = forms.DateField(label='วันเริ่มคุ้มครอง', input_formats=['%Y-%m-%d'])
     contract_cover_end = forms.DateField(label='วันสิ้นสุดคุ้มครอง', input_formats=['%Y-%m-%d'])
-    contract_code = forms.ChoiceField(label='ประเภทประกัน', choices=inscode_choice)
     contract_price = forms.FloatField(label='ราคา')
 
     # ข้อมูลเจ้าของรถ
@@ -59,7 +58,6 @@ class Insurance_PolicyFrom(forms.Form):
     car_displacement.widget.attrs.update({'class':'form-control'})
     car_gvw.widget.attrs.update({'class':'form-control'})
     car_seat.widget.attrs.update({'class':'form-control'})
-    contract_code.widget.attrs.update({'class':'form-control'})
     contract_price.widget.attrs.update({'class':'form-control'})
 
     def clean_contract_cover_end(self):

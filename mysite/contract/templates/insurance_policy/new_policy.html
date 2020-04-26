@@ -87,7 +87,7 @@
             <!-- กรมธรรม์ -->
             <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
                 <div class="row form-group">
-                    <div class="col-lg-6 mt-3"><label for="">{{form.contract_insid.label}}</label> {{form.contract_insid}}</div>
+                    <div class="col-lg-6 mt-3"><label for="">{{form.contract_no.label}}</label> {{form.contract_no}}</div>
                     <div class="col-lg-6 mt-3"></div>
                     <div class="col-lg-4 mt-3">
                         <label for="">บริษัท</label>
@@ -105,7 +105,15 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="col-lg-4 mt-3"><label for="">{{form.contract_code.label}}</label> {{form.contract_code}}</div>
+                    <div class="col-lg-4 mt-3">
+                        <label for="">ประเภทประกัน</label>
+                        <select class="form-control" name="contractcodeSelect" id="">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="3+">3+</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="row form-group mt-4">

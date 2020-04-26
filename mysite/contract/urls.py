@@ -7,4 +7,5 @@ urlpatterns = [
     path('getowner/', views.getowner),
     path('getcar/', views.getcar),
     path('getcus/', views.getcus),
+    path('getpremium/', views.getpremium)
 ]

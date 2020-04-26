@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/index.css/'%}">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,500,600,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Rochester" rel="stylesheet">
+</head>
+
+<body>
+
+    <section class="blog_part section_padding">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-xl-5">
+                    <div class="section_tittle text-center">
+                        <p>Customers infomation</p>
+                        <a href="/admin/infocustomer/customer/add/" class="btn btn-info red" role="button">Add Customer</a> 
+                        <h2>Customers Blog</h2>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+            {% for cus in customer_name %}
+                <div class="col-sm-6 col-lg-4 col-xl-4">
+                    <div class="single-home-blog">
+                        <div class="card">
+                            <img src="{{ cus.picture}}" class="card-img-top" alt="blog">
+                            <div class="card-body">
+                                <a href="" class="btn_4">{{ cus.fname}}</a>
+                                <a href="blog.html">
+                                
+                                    <h5 class="card-title">{{ cus.fname}}    {{ cus.lname}}</h5>                               
+                                </a>
+                                <p>card id :{{cus.card_id}}</p>
+                                <p>phone :{{cus.phone}}</p>
+                                <p>Address :{{cus.address}}</p>
+                                <a href="/edit_cus/{{cus.id }}" class="btn btn-info red" role="button">Edit</a>                                
+                                <a href="/delete/{{cus.id }}" class="btn btn-info red" role="button">Delete</a> 
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+                
+            </div>
+        </div>
+    </section>
+
+    
+    
+</body>
+</html>
+{% endblock %}
+

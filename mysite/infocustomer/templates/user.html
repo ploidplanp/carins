@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/index.css/'%}">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,500,600,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Rochester" rel="stylesheet">
+</head>
+
+<body>
+
+    <section class="blog_part section_padding">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-xl-5">
+                    <div class="section_tittle text-center">
+                        <p>User infomation</p>
+                        <a href="/admin/auth/user/add/" class="btn btn-info red" role="button">Add User</a> 
+                        <h2>User Blog</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+            {% for user in user_data %}
+                <div class="col-sm-6 col-lg-4 col-xl-4">
+                    <div class="single-home-blog">
+                        <div class="card">
+                            <img src="{{ user.picture}}" class="card-img-top" alt="blog">
+                            <div class="card-body">
+                                <a href="" class="btn_4">{{ user.user.first_name}}</a>
+                                <a href="blog.html">
+                                
+                                    <h5 class="card-title">{{ user.user.first_name}}    {{ user.user.last_name}}</h5>                               
+                                </a>
+                                <p>card id :{{user.card_id}}</p>
+                                <p>phone :{{user.phone}}</p>
+                                <a href="/edit/{{user.user.id }}" class="btn btn-info red" role="button">Edit</a>                                
+                                <a href="/delete/{{user.user.id }}" class="btn btn-info red" role="button">Delete</a> 
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}            
+            </div>           
+        </div>
+        
+    </section>
+
+    <section class="blog_part section_padding">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-xl-5">
+                    <div class="section_tittle text-center">   
+                        <p>Company Information</p>   
+                        <a href="admin/home/company/add/" class="btn btn-info red" role="button">Add Company</a>          
+                        <h2>Company</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+            {% for com in company_data %}
+                <div class="col-sm-6 col-lg-4 col-xl-4">
+                    <div class="single-home-blog">
+                        <div class="card">
+                            <img src="{{com.picture}}" class="card-img-top" alt="blog">
+                            <div class="card-body">
+                                <a href="" class="btn_4">{{ com.name}}</a>
+                                <p>tax no. :{{com.tax_no}}</p>
+                                <p>phone :{{com.phone}}</p>
+                                <p>Address :{{com.address}}</p>
+                                <a href="/edit/{{com.id }}" class="btn btn-info red" role="button">Edit</a>                                
+                                <a href="/delete/{{com.id }}" class="btn btn-info red" role="button">Delete</a> 
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}            
+            </div>           
+        </div>
+        
+    </section>
+
+    
+</body>
+</html>
+{% endblock %}
+
