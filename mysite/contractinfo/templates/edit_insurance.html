@@ -1,0 +1,225 @@
+{% extends "base.html" %} {% block content %}
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+    .bdl {
+        border-left: 10px solid #84a9ac;
+        padding-left: 3%;
+    }
+    #mycontractid {
+        visibility: hidden;
+    }
+</style>
+<div class="container">
+    <h1 class="bdl">แก้ไขกรมธรรม์ประกัน<span id="mycontractid">{{insid}}</span></h1><span id="mycontractid">{{insid}}</span>
+    <div class="row">
+        <div class="col-9"></div>
+        <div class="col-3 text-right">
+            <a href="{% url 'ins_delete' ins_id=insid %}" class="btn btn-outline-danger mt-4"><i style="font-size:24px" class="fa">&#xf014;</i></a>
+        </div>
+    </div>
+
+    <form action="{% url 'ins_edit' ins_id=insid %}" method='POST' class="mt-3 mb-5" onsubmit="myFunction()">
+        {% csrf_token %} {{form.errors}}
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">ข้อมูลเจ้างของรถ</a>
+                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">ข้อมูลรถ</a>
+                <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">ข้อมูลประกัน</a>
+                <a class="nav-item nav-link" id="nav-about-tab" data-toggle="tab" href="#nav-about" role="tab" aria-controls="nav-about" aria-selected="false">ข้อมูลผู้ติดต่อ</a>
+            </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+            <!-- เจ้าของรถ -->
+            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                <div class="row form-group">
+                    <div class="col-lg-6 mt-3"><label for="">{{form.owner_cardid.label}}</label> {{form.owner_cardid}}</div>
+                    <div class="col-lg-6 mt-3"><button type="button" class="btn btn-warning mt-4" onclick="getOwn()">ตรวจสอบ</button></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4 mt-3">
+                        <label for="">{{form.owner_fname.label}}</label> {{form.owner_fname}}
+                    </div>
+                    <div class="form-group col-md-4 mt-3">
+                        <label for="">{{form.owner_lname.label}}</label> {{form.owner_lname}}
+                    </div>
+                    <div class="form-group col-md-4 mt-3">
+                        <label for="">{{form.owner_phone.label}}</label> {{form.owner_phone}}
+                    </div>
+                </div>
+                <label for="">{{form.owner_address.label}}</label>{{form.owner_address}}
+
+            </div>
+
+            <!-- รถ -->
+            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                <div class="row form-group">
+                    <div class="col-lg-4 mt-3"><label for="">{{form.car_license.label}}</label> {{form.car_license}}</div>
+                    <div class="col-lg-4 mt-3"><label for="">{{form.car_province.label}}</label> {{form.car_province}}</div>
+                    <div class="col-lg-4 mt-3"><label for="">{{form.car_type.label}}</label> {{form.car_type}}</div>
+                </div>
+
+                <div class="row form-group mt-4">
+                    <div class="col-lg-4 mt-3"><label for="">{{form.car_register.label}}</label>
+                        <!-- {{form.car_register}} -->
+                        <input class="form-control" type="date" name="{{form.car_register.name}}" id="{{form.car_register.id_for_label}}" value="form.car_register">
+
+                    </div>
+                    <div class="col-lg-4 mt-3"><label for="">{{form.car_brand.label}}</label> {{form.car_brand}}</div>
+                    <div class="col-lg-4 mt-3"><label for="">{{form.car_model.label}}</label>{{form.car_model}}</div>
+                </div>
+
+                <div class="form-group mt-4">
+                    <label for="">{{form.car_chassis.label}}</label>{{form.car_chassis}}
+                </div>
+
+                <div class="row form-group mt-4">
+                    <div class="col-lg-4 mt-3"><label for="">{{form.car_displacement.label}}</label> {{form.car_displacement}}</div>
+                    <div class="col-lg-4 mt-3"><label for="">{{form.car_gvw.label}}</label> {{form.car_gvw}}</div>
+                    <div class="col-lg-4 mt-3"><label for="">{{form.car_seat.label}}</label>{{form.car_seat}}</div>
+                </div>
+            </div>
+
+            <!-- กรมธรรม์ -->
+            <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                <div class="row form-group">
+                    <div class="col-lg-6 mt-3"><label for="">{{form.contract_no.label}}</label> {{form.contract_no}}</div>
+                    <div class="col-lg-6 mt-3"></div>
+                    <div class="col-lg-4 mt-3">
+                        <label for="">บริษัท</label>
+                        <select class="form-control" name="companySelect" id="">
+                            {% for company in companylist %}
+                                <option value="{{company.id}}" {% if myins.contract.company == company %} selected {% endif %}>{{company.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-lg-4 mt-3">
+                        <label for="">รหัสการใช้รถประกัน</label>
+                        <select class="form-control" name="caruseSelect" id="">
+                            {% for use in caruselist %}
+                                <option value="{{use.id}}" {% if myins.insurance_car_use_type == use %} selected {% endif %}>{{use}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-lg-4 mt-3">
+                        <label for="">ประเภทประกัน</label>
+                        <select class="form-control" name="contractcodeSelect" id="contractcodeSelect">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="3+">3+</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row form-group mt-4">
+                    <div class="col-lg-4 mt-3"><label for="">{{form.contract_cover_start.label}}</label>
+                        <input onchange="getDate()" class="form-control" type="date" name="{{form.contract_cover_start.name}}" id="{{form.contract_cover_start.id_for_label}}" value="form.contract_cover_start"></div>
+                    <div class="col-lg-4 mt-3"><label for="">{{form.contract_cover_end.label}}</label>
+                        <input onchange="getDate()" class="form-control" type="date" name="{{form.contract_cover_end.name}}" id="{{form.contract_cover_end.id_for_label}}" value="form.contract_cover_end">
+                        <small class="form-text red">{{form.contract_cover_end.errors}}</small>
+                    </div>
+                    <div class="col-lg-4 mt-3"><label for="">{{form.contract_price.label}}</label> {{form.contract_price}}
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ผู้ติดต่อ -->
+            <div class="tab-pane fade" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
+                <div class="row form-group">
+                    <div class="form-group col-md-4 mt-3">
+                        <label for="">{{form.cus_fname.label}}</label> {{form.cus_fname}}
+                    </div>
+                    <div class="form-group col-md-4 mt-3">
+                        <label for="">{{form.cus_lname.label}}</label> {{form.cus_lname}}
+                    </div>
+                    <div class="col-lg-4 mt-3"><button type="button" class="btn btn-warning mt-4" onclick="getCus()">ตรวจสอบ</button></div>
+                </div>
+                <div class="form-row">
+                    <div class="col-lg-6 mt-3"><label for="">{{form.cus_cardid.label}}</label> {{form.cus_cardid}}</div>
+                    <div class="form-group col-md-4 mt-3">
+                        <label for="">{{form.cus_phone.label}}</label> {{form.cus_phone}}
+                    </div>
+                </div>
+                <label for="">{{form.cus_address.label}}</label>{{form.cus_address}} {% comment %} ---- {% endcomment %}
+            </div>
+        </div>
+
+        <input class="btn btn-primary mt-4" type="submit" value="ตกลง">
+    </form>
+</div>
+
+<script>
+    document.getElementById('id_car_license').readOnly = true
+    document.getElementById('id_car_province').disabled = true
+
+    axios.post('/contractinfo/getins/', {
+                insid: document.getElementById('mycontractid').textContent
+            })
+            .then(function(response) {
+                document.getElementById('id_owner_cardid').value = response.data.own_cardid
+                document.getElementById('id_owner_fname').value = response.data.own_fname
+                document.getElementById('id_owner_lname').value = response.data.own_lname
+                document.getElementById('id_owner_phone').value = response.data.own_phone
+                document.getElementById('id_owner_address').value = response.data.own_address
+
+                document.getElementById('id_car_license').value = response.data.car_license
+                document.getElementById('id_car_register').value = response.data.car_regist
+                document.getElementById('id_car_brand').value = response.data.car_brand
+                document.getElementById('id_car_model').value = response.data.car_model
+                document.getElementById('id_car_chassis').value = response.data.car_chassis
+                document.getElementById('id_car_displacement').value = response.data.car_displacement
+                document.getElementById('id_car_gvw').value = response.data.car_gvw
+                document.getElementById('id_car_seat').value = response.data.car_seat
+                
+                document.getElementById('id_contract_no').value = response.data.insurance_id
+                document.getElementById('contractcodeSelect').value = response.data.contract_code
+                document.getElementById('id_contract_cover_start').value = response.data.contract_sdate
+                document.getElementById('id_contract_cover_end').value = response.data.contract_edate
+                document.getElementById('id_contract_price').value = response.data.contract_price
+
+                document.getElementById('id_cus_fname').value = response.data.cus_fname
+                document.getElementById('id_cus_lname').value = response.data.cus_lname
+                document.getElementById('id_cus_phone').value = response.data.cus_phone
+                document.getElementById('id_cus_address').value = response.data.cus_address
+                document.getElementById('id_cus_cardid').value = response.data.cus_cardid
+            })
+
+    function getOwn() {
+        axios.post('/contract/getowner/', {
+                owner_cardid: document.getElementById('id_owner_cardid').value
+            })
+            .then(function(response) {
+                document.getElementById('id_owner_fname').value = response.data.name
+                document.getElementById('id_owner_lname').value = response.data.sur
+                document.getElementById('id_owner_phone').value = response.data.phone
+                document.getElementById('id_owner_address').value = response.data.address
+
+                if (response.data.find == 'no') {
+                    alert('ไม่มีข้อมูลในระบบ')
+                }
+            })
+    }
+    function getCus() {
+        axios.post('/contract/getcus/', {
+                cus_fname: document.getElementById('id_cus_fname').value,
+                cus_lname: document.getElementById('id_cus_lname').value
+            })
+            .then(function(response) {
+                document.getElementById('id_cus_cardid').value = response.data.cardid
+                document.getElementById('id_cus_phone').value = response.data.phone
+                document.getElementById('id_cus_address').value = response.data.address
+
+                if (response.data.find == 'no') {
+                    alert('ไม่มีข้อมูลในระบบ')
+                }
+            })
+    }
+    function myFunction() {
+        document.getElementById('id_car_province').disabled = false
+    }
+
+
+</script>
+{% endblock %}
