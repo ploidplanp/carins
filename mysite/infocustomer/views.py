@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def homepage(request, seller_id):
+    print(seller_id)
     customer = get_customers_by_seller_id(seller_id)
     context = {
         'customer_name': customer      

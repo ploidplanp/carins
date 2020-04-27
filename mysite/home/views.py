@@ -8,6 +8,7 @@ from django.template.context_processors import request
 from django.views.decorators.csrf import csrf_exempt
 
 from home.models import Car_Use_Type_Table, Company, Person, Premium_Table
+from contract.models import Customer
 
 # Create your views here.
 
@@ -78,3 +79,14 @@ def cartype_detail(request):
         'table': table
     }
     return render(request, 'carUseType.html', context=context)
+
+# กดที่ ดูข้อมูลเลือก ลูกค้า
+@login_required
+def mycustomer(request):
+    userid = request.user.id
+    me = Person.objects.get(user_id=userid) #ตัวเรา=userที่ login
+    mycus = Customer.objects.filter(seller_id=me.id)
+    context = {
+        'mycus': mycus
+    }
+    return render(request, 'customer.html', context)
