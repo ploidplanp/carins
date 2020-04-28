@@ -33,12 +33,12 @@
 <div class="container">
     <h1 class="bdl">เปลี่ยนเลขทะเบียนรถ</h1>
     <div class="jumbotron mt-5">
-        <form action="{% url 'new_policy' %}" method='POST'>
+        <form action="{% url 'change_license' %}" method='POST'>
             {% csrf_token %}
             <div class="row">
                 <div class="form-group col-6">
                     <label for="">เลขที่กรมธรรม์</label>
-                    <input class="form-control" id="contract_id">
+                    <input class="form-control" id="contract_id" name="contract_id">
                 </div>
                 <div class="form-group col-3">
                     <label for="">ประเภทกรมธรรม์</label>
