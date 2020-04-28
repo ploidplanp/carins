@@ -21,7 +21,56 @@ from contract.forms import ContractForm
 # หน้าเปลี่ยนเลขทะเบียนรถจากกรมธรรม์
 @login_required
 def change_license(request):
+    
+    changeid = request.POST.get('contract_id', '')
+    changetype = request.POST.get('contract_type', '')
+    changenum = request.POST.get('new_license', '')
+    changepro = request.POST.get('new_province', '')
     provincelist = Province.objects.all()
+    if request.method == 'POST':
+        if changetype == "ins":
+            insurance = Insurance_Policy.objects.get(insurance_id = changeid)
+            contract = Contract.objects.get(id = insurance.contract_id)
+            car = Car.objects.get(id = contract.car_id)
+
+            newcar = Car.objects.create(
+                    license_on = changenum,
+                    date_register = car.date_register,
+                    province_id = changepro,
+                    brand_id = car.brand_id,
+                    model = car.model,
+                    chassis_on = car.chassis_on,
+                    displacement = car.displacement,
+                    gvw = car.gvw,
+                    seat = car.seat,
+                    type = car.type,
+                    owner_id = car.owner_id
+            )
+
+            contract.car_id = newcar.id
+            contract.save()
+
+        if changetype == "comp":
+            compulsory = Compulsory_Insurance.objects.get(compulsory_id = changeid)
+            contract = Contract.objects.get(id = compulsory.contract_id)
+            car = Car.objects.get(id = contract.car_id)
+
+            newcar = Car.objects.create(
+                    license_on = changenum,
+                    date_register = car.date_register,
+                    province_id = changepro,
+                    brand_id = car.brand_id,
+                    model = car.model,
+                    chassis_on = car.chassis_on,
+                    displacement = car.displacement,
+                    gvw = car.gvw,
+                    seat = car.seat,
+                    type = car.type,
+                    owner_id = car.owner_id
+            )
+
+            contract.car_id = newcar.id
+            contract.save()
 
     context = {
         'provincelist': provincelist
