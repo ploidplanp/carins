@@ -19,7 +19,7 @@
                 <div class="col-xl-5">
                     <div class="section_tittle text-center">
                         <p>User infomation</p>
-                        
+                        <a href="/admin/auth/user/add/" class="btn btn-info red" role="button">Add User</a> 
                         <h2>User Blog</h2>
                     </div>
                 </div>
@@ -37,7 +37,10 @@
                                     <h5 class="card-title">{{ user.user.first_name}}    {{ user.user.last_name}}</h5>                               
                                 </a>
                                 <p>card id :{{user.card_id}}</p>
-                                <p>phone :{{user.phone}}</p>                               
+                                <p>phone :{{user.phone}}</p>
+                                <a href="/edit_user/{{user.user.id }}" class="btn btn-info red" role="button">Edit</a>                                
+                                <a href="/deleteuser/{{user.user.id }}" class="btn btn-info red" role="button">Delete</a> 
+                                
                             </div>
                         </div>
                     </div>

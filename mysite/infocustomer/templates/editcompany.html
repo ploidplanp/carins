@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<html lang="en">
+<head>
+	<title>Contact V3</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css/'%}">
+</head>
+<body>
+
+    <div class="site-section" id="contact-section">
+      <div class="container">
+        <form method="POST" action="{% url 'edit_company_page' %}" id="edit_company_page" class="contact3-form validate-form">
+        {% csrf_token %}
+          <div class="section-title text-center mb-5">
+            <span class="sub-title mb-2 d-block">{{company_data.name}}</span>
+            <h2 class="title text-primary">Edit</h2>
+          </div>
+        <center>
+        <div class="padimg">
+          <img src="{{company_data.picture}}" class="card-img-top" alt="blog">
+        </div>
+        </center>
+        <center>
+           {{ form }}
+
+          <input class="input3" type="hidden" name="id" placeholder="ID" value = "{{company_id}}">
+
+          <div class="row">
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary btn-md">Submit</button>
+            </div>
+          </div>
+        </center>
+
+        </form>
+      </div>
+    </div> 
+		
+		
+	</body>
+</html>
+    
+</body>
+</html>
+{% endblock %}
+

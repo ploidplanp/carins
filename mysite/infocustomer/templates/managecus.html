@@ -18,36 +18,43 @@
             <div class="row justify-content-center">
                 <div class="col-xl-5">
                     <div class="section_tittle text-center">
-                        <p>User infomation</p>
-                        
-                        <h2>User Blog</h2>
+                        <p>Customers infomation</p>
+                        <a href="#" class="btn btn-info red" role="button">Add Customer</a> 
+                        <h2>Customers Blog</h2>
                     </div>
                 </div>
             </div>
+            
             <div class="row">
-            {% for user in user_data %}
+            {% for cus in customer_name %}
                 <div class="col-sm-6 col-lg-4 col-xl-4">
                     <div class="single-home-blog">
                         <div class="card">
-                            <img src="{{ user.picture}}" class="card-img-top" alt="blog">
+                            <img src="{{ cus.picture}}" class="card-img-top" alt="blog">
                             <div class="card-body">
-                                <a href="" class="btn_4">{{ user.user.first_name}}</a>
+                                <a href="" class="btn_4">{{ cus.fname}}</a>
                                 <a href="blog.html">
                                 
-                                    <h5 class="card-title">{{ user.user.first_name}}    {{ user.user.last_name}}</h5>                               
+                                    <h5 class="card-title">{{ cus.fname}}    {{ cus.lname}}</h5>                               
                                 </a>
-                                <p>card id :{{user.card_id}}</p>
-                                <p>phone :{{user.phone}}</p>                               
+                                <p>card id :{{cus.card_id}}</p>
+                                <p>phone :{{cus.phone}}</p>
+                                <p>Address :{{cus.address}}</p>
+                                <a href="/edit_cus/{{cus.id }}" class="btn btn-info red" role="button">Edit</a>                                
+                                <a href="/delete/{{cus.id }}" class="btn btn-info red" role="button">Delete</a> 
+                                
                             </div>
                         </div>
                     </div>
                 </div>
-            {% endfor %}            
-            </div>           
+            {% endfor %}
+
+                
+            </div>
         </div>
-        
     </section>
 
+    
     
 </body>
 </html>

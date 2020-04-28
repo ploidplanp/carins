@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.deletion import PROTECT
+from home.models import Company, Person
 
 # Create your models here.
 
@@ -14,12 +15,4 @@ class Seller(models.Model):
         return '%s %s (%s)' %(self.user.first_name, self.user.last_name, self.phone)
     
 
-class Customer(models.Model):
-    card_id = models.CharField(max_length=13)
-    fname = models.CharField(max_length=255)
-    lname = models.CharField(max_length=255)
-    phone = models.CharField(max_length=10) 
-    address = models.CharField(max_length=255)
-    seller_id = models.ForeignKey(Seller, on_delete=models.CASCADE)
-    picture = models.CharField(max_length=255, default= 'https://i.stack.imgur.com/l60Hf.png')
 

@@ -24,6 +24,7 @@ class Customer(models.Model):
     phone = models.CharField(max_length=10)
     address = models.TextField(null=True, blank=True)
     seller = models.ForeignKey(Person, on_delete=models.PROTECT)
+    picture = models.CharField(max_length=255, default= 'https://i.stack.imgur.com/l60Hf.png')
 
     def __str__(self):
         return '%s %s' %(self.fname, self.lname)

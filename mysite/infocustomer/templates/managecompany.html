@@ -17,44 +17,37 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xl-5">
-                    <div class="section_tittle text-center">
-                        <p>Customers infomation</p>
-                        <a href="/admin/infocustomer/customer/add/" class="btn btn-info red" role="button">Add Customer</a> 
-                        <h2>Customers Blog</h2>
+                    <div class="section_tittle text-center">   
+                        <p>Company Information</p>   
+                        <a href="admin/home/company/add/" class="btn btn-info red" role="button">Add Company</a>          
+                        <h2>Company</h2>
                     </div>
                 </div>
             </div>
-            
             <div class="row">
-            {% for cus in customer_name %}
+            {% for com in company_data %}
                 <div class="col-sm-6 col-lg-4 col-xl-4">
                     <div class="single-home-blog">
                         <div class="card">
-                            <img src="{{ cus.picture}}" class="card-img-top" alt="blog">
+                            <img src="{{com.picture}}" class="card-img-top" alt="blog">
                             <div class="card-body">
-                                <a href="" class="btn_4">{{ cus.fname}}</a>
-                                <a href="blog.html">
-                                
-                                    <h5 class="card-title">{{ cus.fname}}    {{ cus.lname}}</h5>                               
-                                </a>
-                                <p>card id :{{cus.card_id}}</p>
-                                <p>phone :{{cus.phone}}</p>
-                                <p>Address :{{cus.address}}</p>
-                                <a href="/edit_cus/{{cus.id }}" class="btn btn-info red" role="button">Edit</a>                                
-                                <a href="/delete/{{cus.id }}" class="btn btn-info red" role="button">Delete</a> 
+                                <a href="" class="btn_4">{{ com.name}}</a>
+                                <p>tax no. :{{com.tax_no}}</p>
+                                <p>phone :{{com.phone}}</p>
+                                <p>Address :{{com.address}}</p>
+                                <a href="/edit_company/{{com.id }}" class="btn btn-info red" role="button">Edit</a>                                
+                                <a href="/deletecompany/{{com.id }}" class="btn btn-info red" role="button">Delete</a> 
                                 
                             </div>
                         </div>
                     </div>
                 </div>
-            {% endfor %}
-
-                
-            </div>
+            {% endfor %}            
+            </div>           
         </div>
+        
     </section>
 
-    
     
 </body>
 </html>
