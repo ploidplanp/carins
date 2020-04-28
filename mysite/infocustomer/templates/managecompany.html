@@ -17,27 +17,27 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xl-5">
-                    <div class="section_tittle text-center">
-                        <p>User infomation</p>
-                        
-                        <h2>User Blog</h2>
+                    <div class="section_tittle text-center">   
+                        <p>Company Information</p>   
+                        <a href="admin/home/company/add/" class="btn btn-info red" role="button">Add Company</a>          
+                        <h2>Company</h2>
                     </div>
                 </div>
             </div>
             <div class="row">
-            {% for user in user_data %}
+            {% for com in company_data %}
                 <div class="col-sm-6 col-lg-4 col-xl-4">
                     <div class="single-home-blog">
                         <div class="card">
-                            <img src="{{ user.picture}}" class="card-img-top" alt="blog">
+                            <img src="{{com.picture}}" class="card-img-top" alt="blog">
                             <div class="card-body">
-                                <a href="" class="btn_4">{{ user.user.first_name}}</a>
-                                <a href="blog.html">
+                                <a href="" class="btn_4">{{ com.name}}</a>
+                                <p>tax no. :{{com.tax_no}}</p>
+                                <p>phone :{{com.phone}}</p>
+                                <p>Address :{{com.address}}</p>
+                                <a href="/edit_company/{{com.id }}" class="btn btn-info red" role="button">Edit</a>                                
+                                <a href="/deletecompany/{{com.id }}" class="btn btn-info red" role="button">Delete</a> 
                                 
-                                    <h5 class="card-title">{{ user.user.first_name}}    {{ user.user.last_name}}</h5>                               
-                                </a>
-                                <p>card id :{{user.card_id}}</p>
-                                <p>phone :{{user.phone}}</p>                               
                             </div>
                         </div>
                     </div>
