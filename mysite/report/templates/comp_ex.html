@@ -11,40 +11,66 @@
 
     <div class="row mt-5">
         <div class="col-lg-8">
+            {% for c in cusbuycoumpulsory %}
+            <div class="jumbotron">
+                <h5>เลขที่กรมธรรม์ {{c.compulsory_id}}</h5>
+                <hr class="my-4">
+                <p>เลขทะเบียน: {{c.contract.car}}</p>
+                <p>ติดต่อ: {{c.contract.customer}} ({{c.contract.customer.phone}})</p>
+                <ul>
+                    <li>บริษัท: {{c.contract.company}}</li>
+                    <li>สถานะ: {{c.contract.status}}</li>
+                    <li>วันเริ่มคุ้มครอง: <i>{{c.contract.date_start_cover}}</i></li>
+                    <li>วันสิ้นสุดคุ้มครอง: <i>{{c.contract.date_end_cover}}</i></li>
+                </ul>
+                <!-- <p class="lead">
+                    <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+                </p> -->
+            </div>
+            {% endfor %}
         </div>
 
         <div class="col-lg-4">
             <div class="row">
-                <div class="col-lg-12">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <input type="date" class="form-control" id="search_day" name="search_day" required>
-                        </div>
-                        <div class="col-lg-6">
-                            <button type="submit" class="mybtn btn btn-outline-primary" style="width: 50%;">Day</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-12 mt-4">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <input type="week" class="form-control" id="search_week" name="search_week" required>
-                        </div>
-                        <div class="col-lg-6">
-                            <button type="submit" class="mybtn btn btn-outline-primary" style="width: 50%;">Week</button>
+                <form method="POST" action="{% url 'comp_expire_report' check='day' %}">
+                    {% csrf_token %}
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <input type="date" class="form-control" id="search_day" name="search_day" required>
+                            </div>
+                            <div class="col-lg-6">
+                                <button type="submit" class="mybtn btn btn-outline-primary" style="width: 50%;">Day</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-12 mt-4">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <input type="month" class="form-control" id="search_month" name="search_month" required>
-                        </div>
-                        <div class="col-lg-6">
-                            <button type="submit" class="mybtn btn btn-outline-primary" style="width: 50%;">Month</button>
+                </form>
+                <form method="POST" action="{% url 'comp_expire_report' check='week' %}">
+                    {% csrf_token %}
+                    <div class="col-lg-12 mt-4">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <input type="week" class="form-control" id="search_week" name="search_week" required>
+                            </div>
+                            <div class="col-lg-6">
+                                <button type="submit" class="mybtn btn btn-outline-primary" style="width: 50%;">Week</button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </form>
+                <form method="POST" action="{% url 'comp_expire_report' check='month' %}">
+                    {% csrf_token %}
+                    <div class="col-lg-12 mt-4">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <input type="month" class="form-control" id="search_month" name="search_month" required>
+                            </div>
+                            <div class="col-lg-6">
+                                <button type="submit" class="mybtn btn btn-outline-primary" style="width: 50%;">Month</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
 
