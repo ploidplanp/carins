@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from infocustomer.models import Seller
 from home.models import Company, Person
 from contract.models import Customer
 from django.http import HttpResponseRedirect
@@ -10,9 +9,11 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
-def homepage(request, person_id):
+def homepage(request):
+    if request.user.is_authenticated:
+        user = request.user
+        person_id = user.id
     customer = get_customers_by_person_id(person_id)
-    print(customer)
     context = {
         'customer_name': customer      
     }
@@ -43,8 +44,7 @@ def edit_cus_page(request, customer_id):
     return render(request, 'editcus.html', context)
 
 def get_customer_id(id):
-    print("Customer ID:", id)
-    customer = Customer.objects.get(pk =id)
+    customer = Customer.objects.get(pk = id)
     return customer
 
 @login_required
@@ -67,20 +67,21 @@ def edit_profile(request):
                 customer_obj.phone = phone
                 customer_obj.address = address
                 customer_obj.save() 
-            return homepage(request, user.id)
+            return homepage(request)
     else:
         form = Edit(default_data, auto_id=False)
     return render(request, 'managecus.html', {'form': form})
 
 @login_required
 def delete_profile(request, customer_id):
+    print("--> Delete customer")
     if request.user.is_authenticated:
         user = request.user
         seller_id = user.id
     customer_obj = get_customer_id(customer_id)
     delete_customer(customer_obj)
 
-    return redirect('/customer/' + str(seller_id))
+    return redirect('/customer/')
 
 @login_required
 def User_homepage(request):
@@ -160,9 +161,9 @@ def edit_user_profile(request):
 
 @login_required
 def delete_user_profile(request, person_id):
-    if request.user.is_authenticated:
-        user = request.user
-    user_obj = get_user_by_id(seller_id)
+    person_obj = get_user_by_id(person_id)
+    user_obj = User.objects.get(pk = person_id)
+    delete_user(person_obj)
     delete_user(user_obj)
 
     return redirect('/manageuser/')
@@ -220,5 +221,33 @@ def delete_company_profile(request, company_id):
 
 def delete_company(company_obj):
     company_obj.delete()
+
+def add_customer_page(request):
+    result = get_user_object()
+    context = {
+        'user_all': result
+    }
+    print(request)
+    return render(request, 'addcus.html', context)
+
+def add_customer_submit(request):
+    userid = request.user.id
+    me = Person.objects.get(user_id=userid)
+    if request.method == 'POST':
+        print("naruk")
+        cus = Customer.objects.create(
+            card_id =  request.POST.get('card_id'),
+            fname = request.POST.get('Fname'),
+            lname = request.POST.get('Lname'),
+            phone = request.POST.get('phone'),
+            address = request.POST.get('address'),
+            seller_id = me.id,
+            picture = request.POST.get('picture')
+        )
+        return homepage(request)
+
+def get_user_object():
+    result = User.objects.all()
+    return result
 
 
