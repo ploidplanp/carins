@@ -27,6 +27,9 @@
     .mycontainer:hover {
         background-color: #faf5ef;
     }
+    b {
+        color: #cd8d7b;
+    }
 </style>
 
 <div class="container">
@@ -103,13 +106,14 @@
                 <p><b>เลขที่กรมธรรม์ประกัน {{c.insurance_id}}</b> <span><small class="card-text text-secondary">(สถานะ: {{c.contract.status}})</small></span></p>
                 <div class="row">
                     <div class="col-6">
-                        <p>ทะเบียนรถ: <b>{{c.contract.car}}</b></p>
-                        <p>ผู้เอาประกัน: {{c.contract.car.owner}} ({{c.contract.car.owner.phone}})</p>
+                        <p>ทะเบียนรถ: <b>{{c.contract.car}}</b> จังหวัด {{c.contract.car.province}}</p>
+                        <p>รหัสการใช้รถ: {{c.insurance_car_use_type}}</p>
+                        <p>ผู้เอาประกัน: <b>{{c.contract.car.owner}}</b> ({{c.contract.car.owner.phone}})</p>
                         <p>ติดต่อลูกค้า: {{c.contract.customer}} ({{c.contract.customer.phone}})</p>
                     </div>
                     <div class="col-6">
-                        <p>วันเริ่มคุ้มครอง: {{c.contract.date_start_cover}}</p>
-                        <p>วันสิ้นสุดคุ้มครอง: <i>{{c.contract.date_end_cover}}</i></p>
+                        <p>วันเริ่มคุ้มครอง: <b>{{c.contract.date_start_cover}}</b></p>
+                        <p>วันสิ้นสุดคุ้มครอง: <b><i>{{c.contract.date_end_cover}}</i></b></p>
                         <p>บริษัท: {{c.contract.company}} (ป. {{c.insurance_code}})</p>
                         <p>ราคา: {{c.contract.price}} บาท</p>
                     </div>
