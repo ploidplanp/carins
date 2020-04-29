@@ -30,8 +30,8 @@ urlpatterns = [
     path('customer/', customer_views.homepage, name='cusindex'), 
     path('managecustomers/',customer_views.add_customer_submit, name='add_cus'), 
     path('edit_cus/<customer_id>/', customer_views.edit_cus_page),
-    path('customers/', customer_views.edit_profile ,name='edit_page'),
-    path('delete/<customer_id>/', customer_views.delete_profile ,name='delete_customer'),
+    path('customers/', customer_views.edit_cus_profile ,name='edit_page'),
+    path('delete/<customer_id>/', customer_views.delete_cus_profile ,name='delete_customer'),
     path('addcustomer/',customer_views.add_customer_page),
 
     #User 
