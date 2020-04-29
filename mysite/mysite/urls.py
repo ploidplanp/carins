@@ -42,8 +42,7 @@ urlpatterns = [
     path('edit_user/<user_id>/', customer_views.edit_user_page),
     path('adduser/',customer_views.add_user_page),
     path('addusersub/',customer_views.add_user_submit, name='add_user'), 
-    path('addperson/',customer_views.add_person_page),
-    path('addpersub/',customer_views.add_person_submit, name='add_per'), 
+    
 
 
     # Company

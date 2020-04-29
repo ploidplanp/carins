@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 {% load static %}
+{% load infocustomer_extras %}
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -20,13 +21,12 @@
                     <div class="section_tittle text-center">
                         <p>User infomation</p>
                         <a href="/adduser/" class="btn btn-info red" role="button">Add User</a>
-                        <a href="/addperson/" class="btn btn-info red" role="button">Add Person</a>  
                         <h2>User Blog</h2>
                     </div>
                 </div>
             </div>
             <div class="row">
-            {% for user in user_data %}
+            {%for user, U in person_data|zip:user_data %}
                 <div class="col-sm-6 col-lg-4 col-xl-4">
                     <div class="single-home-blog">
                         <div class="card">
@@ -39,7 +39,7 @@
                                 </a>
                                 <p>card id :{{user.card_id}}</p>
                                 <p>phone :{{user.phone}}</p>
-                                <p>email :{{user.email}}</p>
+                                <p>email :{{U.email}}</p>
                                 <a href="/edit_user/{{user.user.id }}" class="btn btn-info red" role="button">Edit</a>                                
                                 <a href="/deleteuser/{{user.user.id }}" class="btn btn-info red" role="button">Delete</a> 
                                 
