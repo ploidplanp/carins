@@ -53,7 +53,7 @@ def profile(request):
 # กดที่ ดูข้อมูล เลือก บริษัท จะแสดงรายชื่อบริษัททั้งหมด
 @login_required
 def company_detail(request):
-    table = Company.objects.all().order_by('id')
+    table = Company.objects.all().order_by('name')
 
     context = {
         'table': table
@@ -85,7 +85,7 @@ def cartype_detail(request):
 def mycustomer(request):
     userid = request.user.id
     me = Person.objects.get(user_id=userid) #ตัวเรา=userที่ login
-    mycus = Customer.objects.filter(seller_id=me.id)
+    mycus = Customer.objects.filter(seller_id=me.id).order_by('fname', 'lname')
     context = {
         'mycus': mycus
     }
