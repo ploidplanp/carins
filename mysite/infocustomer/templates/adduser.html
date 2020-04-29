@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<html lang="en">
+<head>
+	<title>Contact V3</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css/'%}">
+</head>
+<body>
+
+     <div class="site-section" id="contact-section">
+      <div class="container">
+        <form method="POST" action="{% url 'add_user' %}" id="add_user" class="contact3-form validate-form">
+        {% csrf_token %}
+
+          <div class="section-title text-center mb-5">
+            <h2 class="title text-primary">Add User</h2>
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-md-6 mb-4 mb-md-0">
+              <input type="text" class="form-control" placeholder="Username" name="username">
+            </div>
+           
+            <div class="col-md-6">
+              <input type="text" class="form-control" placeholder="Password"name="password">
+            </div>
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-md-6 mb-4 mb-md-0">
+              <input type="text" class="form-control" placeholder="Firstname" name="first_name">
+            </div>
+           
+            <div class="col-md-6">
+              <input type="text" class="form-control" placeholder="Lastname"name="last_name">
+            </div>
+          </div>
+{% comment %} 
+        <label class="container">Active
+            <input type="checkbox" name="is_active" checked="checked">
+            <span class="checkmark"></span>
+        </label>
+        <label class="container">Staff
+            <input type="checkbox" name="is_staff">
+            <span class="checkmark"></span>
+        </label> {% endcomment %}
+          
+
+
+          <div class="row">
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary btn-md">Submit</button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+		
+		
+	</body>
+</html>
+    
+</body>
+</html>
+{% endblock %}
+

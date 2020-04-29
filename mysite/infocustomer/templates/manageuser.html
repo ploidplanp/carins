@@ -19,7 +19,8 @@
                 <div class="col-xl-5">
                     <div class="section_tittle text-center">
                         <p>User infomation</p>
-                        <a href="/admin/auth/user/add/" class="btn btn-info red" role="button">Add User</a> 
+                        <a href="/adduser/" class="btn btn-info red" role="button">Add User</a>
+                        <a href="/addperson/" class="btn btn-info red" role="button">Add Person</a>  
                         <h2>User Blog</h2>
                     </div>
                 </div>
@@ -31,13 +32,14 @@
                         <div class="card">
                             <img src="{{ user.picture}}" class="card-img-top" alt="blog">
                             <div class="card-body">
-                                <a href="" class="btn_4">{{ user.user.first_name}}</a>
+                                <a href="" class="btn_4">Username: {{ user.user.username}}</a>
                                 <a href="blog.html">
                                 
                                     <h5 class="card-title">{{ user.user.first_name}}    {{ user.user.last_name}}</h5>                               
                                 </a>
                                 <p>card id :{{user.card_id}}</p>
                                 <p>phone :{{user.phone}}</p>
+                                <p>email :{{user.email}}</p>
                                 <a href="/edit_user/{{user.user.id }}" class="btn btn-info red" role="button">Edit</a>                                
                                 <a href="/deleteuser/{{user.user.id }}" class="btn btn-info red" role="button">Delete</a> 
                                 

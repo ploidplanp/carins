@@ -171,6 +171,46 @@ def delete_user_profile(request, person_id):
 def delete_user(user_obj):
     user_obj.delete()
 
+def add_user_page(request):
+    result = get_user_data()
+    context = {
+
+    }
+    return render(request, 'addperson.html', context)
+
+def add_user_submit(request):
+    userid = request.user.id
+    me = Person.objects.get(user_id=userid)
+    if request.method == 'POST':
+        print("naruk")
+        user = User.objects.create(
+            username = request.POST.get('username'),
+            password = request.POST.get('password'),
+            first_name = request.POST.get('first_name'),
+            last_name= request.POST.get('last_name'),
+        )
+        return User_homepage(request)
+
+def add_person_page(request):
+    result = get_user_object()
+    context = {
+        'user_all': result
+    }
+    return render(request, 'addper.html', context)
+
+def add_person_submit(request):
+    userid = request.user.id
+    me = Person.objects.get(user_id=userid)
+    if request.method == 'POST':
+        print("naruk")
+        person = Person.objects.create(
+            card_id = request.POST.get('card_id'),
+            phone = request.POST.get('phone'),
+            picture = request.POST.get('picture'),
+            user_id = request.POST.get('user_id'),          
+        )
+        return User_homepage(request)
+
 
 def edit_company_page(request, company_id):
     company_data = get_company_by_id(company_id)
@@ -221,6 +261,26 @@ def delete_company_profile(request, company_id):
 
 def delete_company(company_obj):
     company_obj.delete()
+
+def add_company_page(request):
+    result = get_company_data()
+    context = {
+
+    }
+    return render(request, 'addcom.html', context)
+
+def add_company_submit(request):
+    userid = request.user.id
+    me = Person.objects.get(user_id=userid)
+    if request.method == 'POST':
+        print("naruk")
+        com = Company.objects.create(
+            name = request.POST.get('name'),
+            phone = request.POST.get('phone'),
+            address = request.POST.get('address'),
+            picture = request.POST.get('picture')
+        )
+        return Company_homepage(request)
 
 def add_customer_page(request):
     result = get_user_object()
