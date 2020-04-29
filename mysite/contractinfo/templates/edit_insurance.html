@@ -153,6 +153,7 @@
 <script>
     document.getElementById('id_car_license').readOnly = true
     document.getElementById('id_car_province').disabled = true
+    document.getElementById('id_car_type').disabled = true
 
     axios.post('/contractinfo/getins/', {
                 insid: document.getElementById('mycontractid').textContent
@@ -166,6 +167,7 @@
 
                 document.getElementById('id_car_license').value = response.data.car_license
                 document.getElementById('id_car_province').value = response.data.car_province
+                document.getElementById('id_car_type').value = response.data.car_type
                 document.getElementById('id_car_register').value = response.data.car_regist
                 document.getElementById('id_car_brand').value = response.data.car_brand
                 document.getElementById('id_car_model').value = response.data.car_model
@@ -219,6 +221,7 @@
     }
     function myFunction() {
         document.getElementById('id_car_province').disabled = false
+        document.getElementById('id_car_type').disabled = false
     }
 
 
