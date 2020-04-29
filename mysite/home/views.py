@@ -50,6 +50,31 @@ def profile(request):
     }
     return render(request, 'profile.html', context=context)
 
+@login_required
+def changepass(request):
+    msg = ''
+    if request.method == 'POST':
+        mycurrent = request.POST.get('current')
+        mynew = request.POST.get('new')
+        myconfirm = request.POST.get('confirm')
+        username = request.user.username
+        user = authenticate(request, username=username, password=mycurrent)
+        if user:
+            if mynew == myconfirm:
+                user.set_password(mynew)
+                user.save()
+                msg = 'change success'
+                return render(request, template_name='login.html')
+            else:
+                msg = 'your confirm password is not match'
+        else:
+            msg = 'something wrong'
+
+    context = {
+        'msg': msg
+    }
+    return render(request, 'changepassword.html', context)
+
 # กดที่ ดูข้อมูล เลือก บริษัท จะแสดงรายชื่อบริษัททั้งหมด
 @login_required
 def company_detail(request):

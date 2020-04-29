@@ -114,7 +114,7 @@ def ins_search(request):
             msg = 'ค้นหากรมธรรม์เลขที่ %s' %(searchcontractid)
             print(cusbuyinsurance)
         elif 'search2' in request.POST and searchoname != '' and searchosur != '' and searchlicense != '':
-            cusbuyinsurance = Insurance_Policy.objects.filter(contract_id__in=cusbuycontractlistid, contract__status='Available', contract__car__license_on=searchlicense, contract__car__owner__fname=searchoname, contract__car__owner__lname=searchosur)
+            cusbuyinsurance = Insurance_Policy.objects.filter(contract_id__in=cusbuycontractlistid, contract__status='Available', contract__car__license_on=searchlicense, contract__car__owner__fname=searchoname, contract__car__owner__lname=searchosur).order_by('-id')
             msg = 'ค้นหากรมธรรม์ทะเบียนรถ %s ผู้เอาประกัน %s %s' %(searchlicense, searchoname, searchosur)
             print(cusbuyinsurance)
 
@@ -159,7 +159,7 @@ def comp_search(request):
             cusbuycoumpulsory = Compulsory_Insurance.objects.filter(contract_id__in=cusbuycontractlistid, compulsory_id=searchcontractid)
             msg = 'ค้นหากรมธรรม์เลขที่ %s' %(searchcontractid)
         elif 'search2' in request.POST and searchoname != '' and searchosur != '' and searchlicense != '':
-            cusbuycoumpulsory = Compulsory_Insurance.objects.filter(contract_id__in=cusbuycontractlistid, contract__car__license_on=searchlicense, contract__car__owner__fname=searchoname, contract__car__owner__lname=searchosur)
+            cusbuycoumpulsory = Compulsory_Insurance.objects.filter(contract_id__in=cusbuycontractlistid, contract__car__license_on=searchlicense, contract__car__owner__fname=searchoname, contract__car__owner__lname=searchosur).order_by('-id')
             msg = 'ค้นหากรมธรรม์ทะเบียนรถ %s ผู้เอาประกัน %s %s' %(searchlicense, searchoname, searchosur)
 
     context = {

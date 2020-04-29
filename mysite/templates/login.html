@@ -8,11 +8,15 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>LOGIN</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
     <style>
         html,
         body {
             height: 100%;
+            background-image: url(https://i.pinimg.com/originals/4a/30/77/4a30772e96d7352a26414cd60de33655.gif);
+            background-position: center;
+            background-repeat: no-repeat;
+            {% comment %} background-size: cover; {% endcomment %}
         }
         
         body {
@@ -24,6 +28,10 @@
             padding-bottom: 40px;
             /* background-color: #84a9ac; */
         }
+        {% comment %} .mylogin {
+            background-color: white;
+            padding:3%;
+        } {% endcomment %}
         
         .form-signin {
             width: 100%;
@@ -39,23 +47,32 @@
             padding: 10px;
             font-size: 16px;
         }
+        .myerror {
+            margin: 2%;
+            padding: 2%;
+            background-color: hsla(0, 100%, 50%, 0.3);
+            border-radius: 5px;
+            color: #333333;
+        }
     </style>
 
 </head>
 
 <body class="text-center">
-    <form class="form-signin" method="POST" action="{% url 'mylogin' %}">
+    <form class="form-signin mylogin" method="POST" action="{% url 'mylogin' %}">
         {% csrf_token %}
+        <br>
         <h1 class="h3 mb-3 font-weight-normal">Please Login</h1>
 
         <input type="text" id="username" class="form-control mt-3" placeholder="Username" required autofocus name="username">
 
         <input type="password" id="password" class="form-control mt-3" placeholder="Password" required name="password">
-        {% if error %}
-            <p class="text-danger text-left">{{error}}</p>
-        {% endif %}
 
-        <button class="btn btn-lg btn-primary btn-block mt-3" type="submit">Login</button>
+        <button class="btn btn-lg btn-primary btn-block mt-3" type="submit">Login..<i class='fas fa-car-side' style='font-size:18px'></i></button>
+        {% if error %}
+            <p class="text-danger text-center mt-3">{{error}}</p>
+        {% endif %}
+        <br>
     </form>
     {% block content %} {% endblock %}
 
