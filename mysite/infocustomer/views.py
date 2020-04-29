@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
-#Customer_homeage
+#Customer_homeage หน้าดูข้อมูลลูกค้า 
 def homepage(request):
     if request.user.is_authenticated:
         user = request.user
@@ -57,7 +57,6 @@ def edit_cus_profile(request):
         if request.user.is_authenticated:
             user = request.user
             person_id = user.id
-            print("i love sky")
             if form.is_valid():  
                 card_id = form.cleaned_data['cardid']
                 phone = form.cleaned_data['phone']
@@ -78,9 +77,6 @@ def edit_cus_profile(request):
 @login_required
 def delete_cus_profile(request, customer_id):
     print("--> Delete customer")
-    if request.user.is_authenticated:
-        user = request.user
-        seller_id = user.id
     customer_obj = get_customer_id(customer_id)
     delete_customer(customer_obj)
 
@@ -101,7 +97,6 @@ def add_customer_submit(request):
     userid = request.user.id
     me = Person.objects.get(user_id=userid)
     if request.method == 'POST':
-        print("naruk")
         cus = Customer.objects.create(
             card_id =  request.POST.get('card_id'),
             fname = request.POST.get('Fname'),
@@ -113,7 +108,7 @@ def add_customer_submit(request):
         )
         return homepage(request)
 
-        
+
 # ---------------------------------------------------------
 
 @login_required
@@ -156,13 +151,10 @@ def edit_user_page(request, user_id):
 @login_required
 def edit_user_profile(request):
     context = {}
-    print("AAAAAA")
     if request.method == 'POST':
         form = EditUser(request.POST)
-        print("xxxxx")
         if request.user.is_authenticated:
             user = request.user
-            print("i love sky")
             if form.is_valid():  
                 print("Form is valid")
                 card_id = form.cleaned_data['cardid']
@@ -209,7 +201,6 @@ def add_user_submit(request):
     userid = request.user.id
     me = Person.objects.get(user_id=userid)
     if request.method == 'POST':
-        print("naruk")
         user = User.objects.create(
             username = request.POST.get('username'),
             password = request.POST.get('password'),
@@ -219,6 +210,7 @@ def add_user_submit(request):
             
         )
         person = Person.objects.create(
+            id = user.id,
             card_id = request.POST.get('card_id'),
             phone = request.POST.get('phone'),
             picture = request.POST.get('picture'),
@@ -259,22 +251,18 @@ def edit_company_page(request, company_id):
 @login_required
 def edit_company_profile(request):
     context = {}
-    print("AAAAAA")
     if request.method == 'POST':
         form = EditCompany(request.POST)
-        print("xxxxx")
         if request.user.is_authenticated:
             user = request.user
-            print("i love sky")
             if form.is_valid():  
-                print("Form is valid")
+                
                 taxno = form.cleaned_data['taxno']
                 phone = form.cleaned_data['phone']
                 address = form.cleaned_data['address']
                 company_to_edit_id =  request.POST.get('id')  
 
-                company_obj = get_company_by_id(company_to_edit_id)
-                print(company_obj)       
+                company_obj = get_company_by_id(company_to_edit_id)      
                 company_obj.tax_no = taxno
                 company_obj.phone = phone
                 company_obj.address = address
@@ -286,8 +274,6 @@ def edit_company_profile(request):
 
 @login_required
 def delete_company_profile(request, company_id):
-    if request.user.is_authenticated:
-        user = request.user
     company_obj = get_company_by_id(company_id)
     delete_company(company_obj)
 
@@ -307,7 +293,6 @@ def add_company_submit(request):
     userid = request.user.id
     me = Person.objects.get(user_id=userid)
     if request.method == 'POST':
-        print("naruk")
         com = Company.objects.create(
             name = request.POST.get('name'),
             phone = request.POST.get('phone'),
