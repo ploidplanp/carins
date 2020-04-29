@@ -1,5 +1,10 @@
 {% extends "base.html" %} {% block content %}
 <style>
+    .bdl {
+        border-left: 10px solid #84a9ac;
+        padding-left: 3%;
+    }
+    
     .mycompany ul li {
         margin: 2%;
     }
@@ -14,16 +19,7 @@
 </style>
 
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-xl-5">
-            <div class="section_tittle text-center">
-                <p>Company infomation</p>
-
-                <h2>Company Blog</h2>
-            </div>
-        </div>
-    </div>
-    <hr>
+    <h1 class="bdl">รายชื่อบริษัท</h1>
     <div class="row">
         {% for company in table %}
         <div class="col-lg-6 col-md-6 col-sm-12">
