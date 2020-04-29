@@ -85,9 +85,11 @@ def delete_profile(request, customer_id):
 
 @login_required
 def User_homepage(request):
-    user = get_user_data()
+    person = get_user_data()
+    user = User.objects.all()
     context = {
-        'user_data' : user,
+        'person_data' : person,
+        'user_data': user
     }
     return render(request, 'manageuser.html', context)
 
@@ -122,12 +124,13 @@ def User_info(request):
     return render(request, 'user.html', context)
 
 def edit_user_page(request, user_id):
-    user_data = get_user_by_id(user_id)
-    default_data = {'cardid': user_data.card_id, 'phone': user_data.phone}
+    person_data = get_user_by_id(user_id)
+    user_data = User.objects.get(pk = user_id)
+    default_data = {'cardid': person_data.card_id, 'phone': person_data.phone, 'email': user_data.email}
     form = EditUser(default_data, auto_id=False)
     context = {
         'user_id': user_id,
-        'user_data': user_data,
+        'user_data': person_data,
         'form': form
     }
     return render(request, 'edituser.html', context)
@@ -146,13 +149,19 @@ def edit_user_profile(request):
                 print("Form is valid")
                 card_id = form.cleaned_data['cardid']
                 phone = form.cleaned_data['phone']
+                email = form.cleaned_data['email']
                 Person_to_edit_id =  request.POST.get('id')  
 
-                user_obj = get_user_by_id(Person_to_edit_id)
-                print(user_obj)       
-                user_obj.card_id = card_id
-                user_obj.phone = phone
-                user_obj.save() 
+                person_obj = get_user_by_id(Person_to_edit_id)
+                user_obj = User.objects.get(pk = Person_to_edit_id)
+
+                user_obj.email = email
+
+                person_obj.card_id = card_id
+                person_obj.phone = phone
+
+                person_obj.save() 
+                user_obj.save()
             return User_homepage(request)
     else:
         form = EditUser(default_data, auto_id=False)
@@ -171,6 +180,33 @@ def delete_user_profile(request, person_id):
 def delete_user(user_obj):
     user_obj.delete()
 
+def add_user_page(request):
+    result = get_user_data()
+    context = {
+
+    }
+    return render(request, 'adduser.html', context)
+
+def add_user_submit(request):
+    userid = request.user.id
+    me = Person.objects.get(user_id=userid)
+    if request.method == 'POST':
+        print("naruk")
+        user = User.objects.create(
+            username = request.POST.get('username'),
+            password = request.POST.get('password'),
+            first_name = request.POST.get('first_name'),
+            last_name= request.POST.get('last_name'),
+            
+        )
+        person = Person.objects.create(
+            card_id = request.POST.get('card_id'),
+            phone = request.POST.get('phone'),
+            picture = request.POST.get('picture'),
+            user_id = user.id,          
+        )
+        return User_homepage(request)
+
 
 def edit_company_page(request, company_id):
     company_data = get_company_by_id(company_id)
@@ -182,6 +218,7 @@ def edit_company_page(request, company_id):
         'form': form
     }
     return render(request, 'editcompany.html', context)
+
 @login_required
 def edit_company_profile(request):
     context = {}
@@ -222,6 +259,26 @@ def delete_company_profile(request, company_id):
 def delete_company(company_obj):
     company_obj.delete()
 
+def add_company_page(request):
+    result = get_company_data()
+    context = {
+
+    }
+    return render(request, 'addcom.html', context)
+
+def add_company_submit(request):
+    userid = request.user.id
+    me = Person.objects.get(user_id=userid)
+    if request.method == 'POST':
+        print("naruk")
+        com = Company.objects.create(
+            name = request.POST.get('name'),
+            phone = request.POST.get('phone'),
+            address = request.POST.get('address'),
+            picture = request.POST.get('picture')
+        )
+        return Company_homepage(request)
+
 def add_customer_page(request):
     result = get_user_object()
     context = {
@@ -249,5 +306,6 @@ def add_customer_submit(request):
 def get_user_object():
     result = User.objects.all()
     return result
+
 
 

@@ -8,6 +8,8 @@ from home.models import Car_Use_Type_Table, Person, Premium_Table, Company, Prov
 
 class PersonAdmin(admin.ModelAdmin):
     list_display = ['user', 'card_id', 'phone']
+    search_fields = ['user', 'card_id', 'phone']
+    list_per_page = 20
 
 class Car_Use_Type_TableAdmin(admin.ModelAdmin):
     list_display = ['code', 'info']
@@ -15,15 +17,19 @@ class Car_Use_Type_TableAdmin(admin.ModelAdmin):
 
 class Premium_TableAdmin(admin.ModelAdmin):
     list_display = ['code', 'make_model', 'info', 'premium', 'revenue_stamp', 'vat', 'total']
+    search_fields = ['code', 'info']
 
 class CompanyAdmin(admin.ModelAdmin):
     list_display = ['name', 'tax_no', 'address', 'phone']
+    search_fields = ['name', 'tax_no', 'phone']
 
 class ProvinceAdmin(admin.ModelAdmin):
     list_display = ['name']
+    search_fields = ['name']
 
 class BrandAdmin(admin.ModelAdmin):
     list_display = ['name']
+    search_fields = ['name']
 
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Car_Use_Type_Table, Car_Use_Type_TableAdmin)
