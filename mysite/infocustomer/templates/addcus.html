@@ -41,15 +41,8 @@
               <input type="text" class="form-control" placeholder="Phone" name="phone">
             </div>
           </div>
-          <div class="row mb-4">
-            <div class="col-12">
-              Seller_id: <select id="Seller_id">
-            {% for user in user_all %}
-                <option value="{{user.id}}">{{user.first_name}}</option>
-            {% endfor %}
-                </select>
-            </div>
-          </div>
+
+
           <div class="row mb-4">
             <div class="col-12">
               <input type="text" class="form-control" placeholder="URL_Picture" name="picture" value= "https://i.stack.imgur.com/l60Hf.png">
