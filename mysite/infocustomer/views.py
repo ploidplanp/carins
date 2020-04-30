@@ -86,16 +86,15 @@ def delete_customer(customer_obj):
     customer_obj.delete()
 
 def add_customer_page(request):
-    result = get_user_object()
     context = {
-        'user_all': result
+
     }
-    print(request)
+
     return render(request, 'addcus.html', context)
 
 def add_customer_submit(request):
     userid = request.user.id
-    me = Person.objects.get(user_id=userid)
+    # me = Person.objects.get(user_id=userid)
     if request.method == 'POST':
         cus = Customer.objects.create(
             card_id =  request.POST.get('card_id'),
@@ -103,7 +102,7 @@ def add_customer_submit(request):
             lname = request.POST.get('Lname'),
             phone = request.POST.get('phone'),
             address = request.POST.get('address'),
-            seller_id = me.id,
+            seller_id = userid,
             picture = request.POST.get('picture')
         )
         return homepage(request)
